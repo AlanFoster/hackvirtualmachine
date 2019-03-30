@@ -9,7 +9,8 @@ program:
     ;
 
 statements:
-    statement*;
+    statement*
+    ;
 
 statement:
     push
@@ -85,7 +86,7 @@ TEMP: T E M P ;
 
 // Skip whitespaces and comments by default
 COMMENT: '//' ~( '\r' | '\n' )* -> channel(HIDDEN) ;
-WS: [ \t\n] -> channel(HIDDEN);
+WS: [ \t\r\n] -> channel(HIDDEN);
 
 fragment A : [aA]; // match either an 'a' or 'A'
 fragment B : [bB];
