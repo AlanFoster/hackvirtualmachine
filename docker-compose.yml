@@ -9,4 +9,4 @@ services:
   test:
     <<: *default
     command:
-      pytest
+      pytest -vv
