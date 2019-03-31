@@ -30,10 +30,13 @@ class Visitor(VMVisitor):
         if segment == 'constant':
             value = ctx.INT().getText()
             return '\n'.join([
+                f"// push constant {value}",
+
                 # Set constant in stack pointer
                 f"@{value}",
                 "D=A",
                 "@SP",
+                "A=M",
                 "M=D",
 
                 # Increment stack, sp++
@@ -52,6 +55,8 @@ class Visitor(VMVisitor):
                                  f'Available registers: R{temp_registers_start}-R{temp_registers_end}')
 
             return '\n'.join([
+                f"// push temp {i}",
+
                 # Calculating addr, where addr = LCL + i
                 f"@{allocated_register}",  # Load the value stored in LCL
                 "D=A",  # D is now addr = temp_registers_start + i
@@ -71,6 +76,8 @@ class Visitor(VMVisitor):
             i = ctx.INT().getText()
 
             return '\n'.join([
+                f"// push {segment} {i}",
+
                 # Calculating addr, where addr = LCL + i
                 f"@{hack_segment_names[segment]}",  # Load the value stored in LCL
                 "D=M",
@@ -90,19 +97,50 @@ class Visitor(VMVisitor):
         else:
             raise ValueError(f'unexpected segment value: "{segment}"')
 
+    # Visit a parse tree produced by VMParser#pop.
+    def visitPop(self, ctx: VMParser.PopContext):
+        return "pop " + self.visit(ctx.segment()) + " " + ctx.INT().getText()
 
-# Visit a parse tree produced by VMParser#pop.
-def visitPop(self, ctx: VMParser.PopContext):
-    return "pop " + self.visit(ctx.segment()) + " " + ctx.INT().getText()
+        # Visit a parse tree produced by VMParser#arithmetic.
 
-    # Visit a parse tree produced by VMParser#arithmetic.
+    def visitArithmetic(self, ctx: VMParser.ArithmeticContext):
+        operation = ctx.getText()
+        if operation == 'add':
+            return '\n'.join([
+                f"// {operation}",
 
+                # Decrement SP to point to the first value
+                "@SP",
+                "M=M-1",
 
-def visitArithmetic(self, ctx: VMParser.ArithmeticContext):
-    return ctx.getText()
+                # Store the "top" value of *SP into the D register
+                "@SP",
+                "A=M",
+                "D=M",
+
+                # Decrement SP to point to the second value
+                "@SP",
+                "M=M-1",
+
+                # Load the second value of *SP for the required arithmetic operation
+                "@SP",
+                "A=M",
+
+                # Perform the required arithmetic operation and store the result in D
+                "D=D+M",
+
+                # Assign the result of the arithmetic operation to *SP
+                "@SP",
+                "A=M",
+                "M=D",
+
+                # Increment stack, sp++
+                "@SP",
+                "M=M+1"
+            ])
+        else:
+            raise ValueError(f'unexpected arithmetic value: "{operation}"')
 
     # Visit a parse tree produced by VMParser#logical.
-
-
-def visitLogical(self, ctx: VMParser.LogicalContext):
-    return ctx.getText()
+    def visitLogical(self, ctx: VMParser.LogicalContext):
+        return ctx.getText()

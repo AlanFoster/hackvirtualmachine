@@ -8,6 +8,9 @@ def main(argv):
     result = VmToHack.convert(input_stream)
     print(result)
 
+    with open('output.asm', 'w') as file:
+        file.write(result)
+
 
 if __name__ == '__main__':
     main(sys.argv)
