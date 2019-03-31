@@ -40,6 +40,33 @@ class Visitor(VMVisitor):
                 "@SP",
                 "M=M+1",
             ])
+        elif segment == 'temp':
+            i = int(ctx.INT().getText())
+
+            temp_registers_start = 5
+            temp_registers_end = 12
+            allocated_register = temp_registers_start + i
+
+            if allocated_register > temp_registers_end:
+                raise ValueError(f'Unexpected temp register value: "{allocated_register}". This would cause overflow;.'
+                                 f'Available registers: R{temp_registers_start}-R{temp_registers_end}')
+
+            return '\n'.join([
+                # Calculating addr, where addr = LCL + i
+                f"@{allocated_register}",  # Load the value stored in LCL
+                "D=A",  # D is now addr = temp_registers_start + i
+
+                # *sp = *addr
+                "D=M",  # Load the value stored within addr, i.e. *addr
+                "@SP",  # Fetch the segment pointer
+                "A=M",  # Load *sp into the address register
+                "M=D",  # *sp = *addr
+
+                # Increment stack, sp++
+                "@SP",
+                "M=M+1"
+            ])
+
         elif segment in hack_segment_names:
             i = ctx.INT().getText()
 
@@ -50,6 +77,7 @@ class Visitor(VMVisitor):
                 f"@{i}",  # Load i
                 "D=D+M",  # D is now addr = LCL + i
 
+                # *sp = *addr
                 "D=M",  # Load the value stored within addr, i.e. *addr
                 "@SP",  # Fetch the segment pointer
                 "A=M",  # Load *sp into the address register

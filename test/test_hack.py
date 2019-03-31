@@ -58,3 +58,19 @@ def test_push_argument():
     ])
 
     assert convert(vm_input) == expected
+
+
+def test_push_temp():
+    vm_input = "push temp 3"
+    expected = combine([
+        "@8",
+        "D=A",
+        "D=M",
+        "@SP",
+        "A=M",
+        "M=D",
+        "@SP",
+        "M=M+1",
+    ])
+
+    assert convert(vm_input) == expected
