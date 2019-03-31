@@ -71,12 +71,12 @@ class VMListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by VMParser#stack.
-    def enterStack(self, ctx:VMParser.StackContext):
+    # Enter a parse tree produced by VMParser#segment.
+    def enterSegment(self, ctx:VMParser.SegmentContext):
         pass
 
-    # Exit a parse tree produced by VMParser#stack.
-    def exitStack(self, ctx:VMParser.StackContext):
+    # Exit a parse tree produced by VMParser#segment.
+    def exitSegment(self, ctx:VMParser.SegmentContext):
         pass
 
 

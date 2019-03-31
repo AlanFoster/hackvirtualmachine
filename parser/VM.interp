@@ -56,7 +56,7 @@ push
 pop
 arithmetic
 logical
-stack
+segment
 
 
 atn:

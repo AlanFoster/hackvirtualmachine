@@ -11,5 +11,5 @@ docker-compose run --rm service /bin/sh /usr/local/bin/antlr4 VM.g4 -Dlanguage=P
 
 ```shell
 docker-compose build
-docker-compose run test
+docker-compose run --rm test
 ```

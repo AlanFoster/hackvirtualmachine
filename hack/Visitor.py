@@ -17,11 +17,11 @@ class Visitor(VMVisitor):
 
     # Visit a parse tree produced by VMParser#push.
     def visitPush(self, ctx: VMParser.PushContext):
-        return "push " + self.visit(ctx.stack()) + " " + ctx.INT().getText()
+        return "push " + self.visit(ctx.segment()) + " " + ctx.INT().getText()
 
     # Visit a parse tree produced by VMParser#pop.
     def visitPop(self, ctx: VMParser.PopContext):
-        return "pop " + self.visit(ctx.stack()) + " " + ctx.INT().getText()
+        return "pop " + self.visit(ctx.segment()) + " " + ctx.INT().getText()
 
     # Visit a parse tree produced by VMParser#arithmetic.
     def visitArithmetic(self, ctx: VMParser.ArithmeticContext):
@@ -32,5 +32,5 @@ class Visitor(VMVisitor):
         return ctx.getText()
 
     # Visit a parse tree produced by VMParser#stack.
-    def visitStack(self, ctx: VMParser.StackContext):
+    def visitSegment(self, ctx: VMParser.SegmentContext):
         return ctx.getText()

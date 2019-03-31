@@ -20,10 +20,10 @@ statement:
     ;
 
 push:
-    PUSH stack INT ;
+    PUSH segment INT ;
 
 pop:
-    POP stack INT ;
+    POP segment INT ;
 
 arithmetic:
     ADD
@@ -40,8 +40,8 @@ logical:
     | NOT
     ;
 
-// Target stack in memory
-stack:
+// Target segment
+segment:
     LOCAL
     | ARGUMENT
     | THIS

@@ -44,8 +44,8 @@ class VMVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by VMParser#stack.
-    def visitStack(self, ctx:VMParser.StackContext):
+    # Visit a parse tree produced by VMParser#segment.
+    def visitSegment(self, ctx:VMParser.SegmentContext):
         return self.visitChildren(ctx)
 
 

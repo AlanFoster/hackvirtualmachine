@@ -51,10 +51,10 @@ class VMParser ( Parser ):
     RULE_pop = 4
     RULE_arithmetic = 5
     RULE_logical = 6
-    RULE_stack = 7
+    RULE_segment = 7
 
     ruleNames =  [ "program", "statements", "statement", "push", "pop", 
-                   "arithmetic", "logical", "stack" ]
+                   "arithmetic", "logical", "segment" ]
 
     EOF = Token.EOF
     INT=1
@@ -291,8 +291,8 @@ class VMParser ( Parser ):
         def PUSH(self):
             return self.getToken(VMParser.PUSH, 0)
 
-        def stack(self):
-            return self.getTypedRuleContext(VMParser.StackContext,0)
+        def segment(self):
+            return self.getTypedRuleContext(VMParser.SegmentContext,0)
 
 
         def INT(self):
@@ -327,7 +327,7 @@ class VMParser ( Parser ):
             self.state = 31
             self.match(VMParser.PUSH)
             self.state = 32
-            self.stack()
+            self.segment()
             self.state = 33
             self.match(VMParser.INT)
         except RecognitionException as re:
@@ -348,8 +348,8 @@ class VMParser ( Parser ):
         def POP(self):
             return self.getToken(VMParser.POP, 0)
 
-        def stack(self):
-            return self.getTypedRuleContext(VMParser.StackContext,0)
+        def segment(self):
+            return self.getTypedRuleContext(VMParser.SegmentContext,0)
 
 
         def INT(self):
@@ -384,7 +384,7 @@ class VMParser ( Parser ):
             self.state = 35
             self.match(VMParser.POP)
             self.state = 36
-            self.stack()
+            self.segment()
             self.state = 37
             self.match(VMParser.INT)
         except RecognitionException as re:
@@ -521,7 +521,7 @@ class VMParser ( Parser ):
         return localctx
 
 
-    class StackContext(ParserRuleContext):
+    class SegmentContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -552,29 +552,29 @@ class VMParser ( Parser ):
             return self.getToken(VMParser.TEMP, 0)
 
         def getRuleIndex(self):
-            return VMParser.RULE_stack
+            return VMParser.RULE_segment
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStack" ):
-                listener.enterStack(self)
+            if hasattr( listener, "enterSegment" ):
+                listener.enterSegment(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStack" ):
-                listener.exitStack(self)
+            if hasattr( listener, "exitSegment" ):
+                listener.exitSegment(self)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitStack" ):
-                return visitor.visitStack(self)
+            if hasattr( visitor, "visitSegment" ):
+                return visitor.visitSegment(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
 
-    def stack(self):
+    def segment(self):
 
-        localctx = VMParser.StackContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_stack)
+        localctx = VMParser.SegmentContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 14, self.RULE_segment)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
