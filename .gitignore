@@ -1,5 +1,6 @@
 examples/
 __pycache__/
 *.pyc
+*.vm
 *.asm
 *.hack
