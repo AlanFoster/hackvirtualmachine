@@ -23,7 +23,6 @@ class Visitor(VMVisitor):
             # "D=A",
             # "@LCL",
             # "M=D",
-            # "M=A",
         ]
         instructions = [self.visit(child) for child in ctx.getChildren()]
         return "\n".join(preamble + instructions) + "\n"
@@ -52,6 +51,7 @@ class Visitor(VMVisitor):
                     # Set constant in stack pointer
                     f"@{value}",
                     "D=A",
+                    # *sp=d
                     "@SP",
                     "A=M",
                     "M=D",
@@ -72,6 +72,32 @@ class Visitor(VMVisitor):
                     "@SP",  # Fetch the segment pointer
                     "A=M",  # Load *sp into the address register
                     "M=D",  # *sp = *addr
+                    # Increment stack, sp++
+                    "@SP",
+                    "M=M+1",
+                ]
+            )
+        elif segment == "pointer":
+            i = ctx.INT().getText()
+
+            if i == "0":
+                target = "THIS"
+            elif i == "1":
+                target = "THAT"
+            else:
+                raise ValueError(
+                    f'Pointer target may only be 0 or 1, instead received "{i}"'
+                )
+
+            return "\n".join(
+                [
+                    f"// push pointer {i}",
+                    f"@{target}",
+                    "D=M",
+                    # *sp=d
+                    "@SP",
+                    "A=M",
+                    "M=D",
                     # Increment stack, sp++
                     "@SP",
                     "M=M+1",
@@ -173,6 +199,33 @@ class Visitor(VMVisitor):
                     "D=M",
                     # Store the new value
                     f"@{allocated_register}",
+                    "M=D",
+                ]
+            )
+        elif segment == "pointer":
+            i = ctx.INT().getText()
+
+            if i == "0":
+                target = "THIS"
+            elif i == "1":
+                target = "THAT"
+            else:
+                raise ValueError(
+                    f'Pointer target may only be 0 or 1, instead received "{i}"'
+                )
+
+            return "\n".join(
+                [
+                    f"// pop pointer {i}",
+                    # Decrement stack, sp--
+                    "@SP",
+                    "M=M-1",
+                    # Fetch *SP
+                    "@SP",
+                    "A=M",
+                    "D=M",
+                    # Store the new value
+                    f"@{target}",
                     "M=D",
                 ]
             )

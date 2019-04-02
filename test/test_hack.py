@@ -77,6 +77,7 @@ def test_push_argument():
 def test_push_temp():
     vm_input = "push temp 3"
     expected = combine(
+        # fmt: off
         [
             "// push temp 3",
             "@8",
@@ -89,6 +90,7 @@ def test_push_temp():
             "@SP",
             "M=M+1",
         ]
+        # fmt: on
     )
 
     assert convert(vm_input) == expected
@@ -107,6 +109,46 @@ def test_push_static():
             "@SP",
             "M=M+1",
         ]
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_push_pointer_this():
+    vm_input = "push pointer 0"
+    expected = combine(
+        # fmt: off
+        [
+            "// push pointer 0",
+            "@THIS",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_push_pointer_that():
+    vm_input = "push pointer 1"
+    expected = combine(
+        # fmt: off
+        [
+            "// push pointer 1",
+            "@THAT",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
     )
 
     assert convert(vm_input) == expected
@@ -172,6 +214,46 @@ def test_pop_static():
             "@mock_global_namespace.3",
             "M=D",
         ]
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_pop_pointer_this():
+    vm_input = "push pointer 0"
+    expected = combine(
+        # fmt: off
+        [
+            "// push pointer 0",
+            "@THIS",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_pop_pointer_that():
+    vm_input = "push pointer 1"
+    expected = combine(
+        # fmt: off
+        [
+            "// push pointer 1",
+            "@THAT",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
     )
 
     assert convert(vm_input) == expected
