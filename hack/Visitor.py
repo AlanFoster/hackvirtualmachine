@@ -5,6 +5,7 @@ from parser.VMVisitor import VMVisitor
 class Visitor(VMVisitor):
     def __init__(self, namespace):
         self.namespace = namespace
+        self.comparison_count = 0
 
     # Visit a parse tree produced by VMParser#program.
     def visitProgram(self, ctx: VMParser.ProgramContext):
@@ -330,4 +331,112 @@ class Visitor(VMVisitor):
 
     # Visit a parse tree produced by VMParser#logical.
     def visitLogical(self, ctx: VMParser.LogicalContext):
-        return ctx.getText()
+        operator = ctx.getText()
+
+        # fmt: off
+        operator_map = {
+            "eq": "JEQ",
+            "gt": "JGT",
+            "lt": "JLT"
+        }
+        # fmt: on
+
+        if operator == "not":
+            return "\n".join(
+                # fmt: off
+                [
+                    f"// not",
+                    "@SP",
+                    "A=M-1",
+                    "M=!M",
+                ]
+                # fmt: on
+            )
+        elif operator in operator_map:
+            self.comparison_count += 1
+            jump_name = operator_map[operator]
+
+            return "\n".join(
+                # fmt: off
+                [
+                    # SP--
+                    "@SP",
+                    "M=M-1",
+
+                    # Keep track of the first argument
+                    "@SP",
+                    "A=M",
+                    "D=M",
+
+                    # SP--
+                    "@SP",
+                    "M=M-1",
+
+                    # Lookup second number *sp
+                    "A=M",
+
+                    # Subtract both numbers
+                    "D=M-D",
+
+                    # Jumping logic
+                    f"@{jump_name}.True.{self.comparison_count}",
+                    f"D;{jump_name}",
+
+                    # False path
+                    f"({jump_name}.False.{self.comparison_count})",
+                    "D=0",
+                    f"@{jump_name}.Finally.{self.comparison_count}",
+                    f"0;JMP",
+
+                    # True Path
+                    f"({jump_name}.True.{self.comparison_count})",
+                    "D=-1",
+
+                    f"({jump_name}.Finally.{self.comparison_count})",
+                    # *sp = d
+                    "@SP",
+                    "A=M",
+                    "M=D",
+
+                    # sp++
+                    "@SP",
+                    "M=M+1"
+                ]
+                # fmt: on
+            )
+        elif operator == "and" or operator == "or":
+            return "\n".join(
+                # fmt: off
+                [
+                    # SP--
+                    "@SP",
+                    "M=M-1",
+
+                    # Keep track of the first argument
+                    "@SP",
+                    "A=M",
+                    "D=M",
+
+                    # SP--
+                    "@SP",
+                    "M=M-1",
+
+                    # Lookup second number *sp
+                    "A=M",
+
+                    # Subtract both numbers
+                    "D=D&M" if operator == "and" else "D=D|M",
+
+                    # *sp = d
+                    "@SP",
+                    "A=M",
+                    "M=D",
+
+                    # sp++
+                    "@SP",
+                    "M=M+1"
+                ]
+                # fmt: on
+            )
+        else:
+            raise ValueError(f'Unexpected logical operation "{operator}"')

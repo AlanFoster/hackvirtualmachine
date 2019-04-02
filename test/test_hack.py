@@ -318,8 +318,181 @@ def test_neg():
         [
             "// neg",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=-M"
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_not():
+    vm_input = "not"
+    expected = combine(
+        # fmt: off
+        [
+            "// not",
+            "@SP",
+            "A=M-1",
+            "M=!M"
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_eq():
+    vm_input = "eq"
+    expected = combine(
+        # fmt: off
+        [
+            "@SP",
+            "M=M-1",
+            "@SP",
+            "A=M",
+            "D=M",
+            "@SP",
+            "M=M-1",
+            "A=M",
+            "D=M-D",
+            "@JEQ.True.1",
+            "D;JEQ",
+            "(JEQ.False.1)",
+            "D=0",
+            "@JEQ.Finally.1",
+            "0;JMP",
+            "(JEQ.True.1)",
+            "D=-1",
+            "(JEQ.Finally.1)",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_gt():
+    vm_input = "gt"
+    expected = combine(
+        # fmt: off
+        [
+            "@SP",
+            "M=M-1",
+            "@SP",
+            "A=M",
+            "D=M",
+            "@SP",
+            "M=M-1",
+            "A=M",
+            "D=M-D",
+            "@JGT.True.1",
+            "D;JGT",
+            "(JGT.False.1)",
+            "D=0",
+            "@JGT.Finally.1",
+            "0;JMP",
+            "(JGT.True.1)",
+            "D=-1",
+            "(JGT.Finally.1)",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_lt():
+    vm_input = "lt"
+    expected = combine(
+        # fmt: off
+        [
+            "@SP",
+            "M=M-1",
+            "@SP",
+            "A=M",
+            "D=M",
+            "@SP",
+            "M=M-1",
+            "A=M",
+            "D=M-D",
+            "@JLT.True.1",
+            "D;JLT",
+            "(JLT.False.1)",
+            "D=0",
+            "@JLT.Finally.1",
+            "0;JMP",
+            "(JLT.True.1)",
+            "D=-1",
+            "(JLT.Finally.1)",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_and():
+    vm_input = "and"
+    expected = combine(
+        # fmt: off
+        [
+            "@SP",
+            "M=M-1",
+            "@SP",
+            "A=M",
+            "D=M",
+            "@SP",
+            "M=M-1",
+            "A=M",
+            "D=D&M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
+
+
+def test_or():
+    vm_input = "or"
+    expected = combine(
+        # fmt: off
+        [
+            "@SP",
+            "M=M-1",
+            "@SP",
+            "A=M",
+            "D=M",
+            "@SP",
+            "M=M-1",
+            "A=M",
+            "D=D|M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
         ]
         # fmt: on
     )
