@@ -309,3 +309,19 @@ def test_sub():
     )
 
     assert convert(vm_input) == expected
+
+
+def test_neg():
+    vm_input = "neg"
+    expected = combine(
+        # fmt: off
+        [
+            "// neg",
+            "@SP",
+            "A=M",
+            "M=-M"
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected

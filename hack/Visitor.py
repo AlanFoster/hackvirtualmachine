@@ -314,6 +314,17 @@ class Visitor(VMVisitor):
                     "M=M+1",
                 ]
             )
+        elif operation == "neg":
+            return "\n".join(
+                # fmt: off
+                [
+                    f"// neg",
+                    "@SP",
+                    "A=M-1",
+                    "M=-M",
+                ]
+                # fmt: on
+            )
         else:
             raise ValueError(f'unexpected arithmetic value: "{operation}"')
 
