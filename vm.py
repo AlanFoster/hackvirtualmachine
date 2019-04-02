@@ -9,7 +9,7 @@ def main(argv):
     output_path = Path(input_path).with_suffix(".asm")
 
     input_stream = antlr4.FileStream(input_path)
-    result = VmToHack.convert(input_stream)
+    result = VmToHack.convert(namespace=input_path.name, input_stream=input_stream)
     print(result)
 
     with open(output_path, "w") as file:

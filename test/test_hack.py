@@ -3,7 +3,7 @@ from hack.VmToHack import VmToHack
 
 
 def convert(vm_input):
-    return VmToHack.convert(antlr4.InputStream(vm_input))
+    return VmToHack.convert("mock_global_namespace", antlr4.InputStream(vm_input))
 
 
 def combine(instructions):
@@ -99,7 +99,7 @@ def test_push_static():
     expected = combine(
         [
             "// push static 3",
-            "@GeneratedGlobalConstant.3",
+            "@mock_global_namespace.3",
             "D=M",
             "@SP",
             "A=M",
@@ -169,12 +169,10 @@ def test_pop_static():
             "@SP",
             "A=M",
             "D=M",
-            "@GeneratedGlobalConstant.3",
+            "@mock_global_namespace.3",
             "M=D",
         ]
     )
-
-    print(convert(vm_input))
 
     assert convert(vm_input) == expected
 

@@ -6,11 +6,11 @@ from hack.Visitor import Visitor
 
 class VmToHack:
     @staticmethod
-    def convert(input_stream):
+    def convert(namespace, input_stream):
         lexer = VMLexer(input_stream)
         stream = antlr4.CommonTokenStream(lexer)
         parser = VMParser(stream)
         tree = parser.program()
 
-        visitor = Visitor()
+        visitor = Visitor(namespace)
         return visitor.visit(tree)

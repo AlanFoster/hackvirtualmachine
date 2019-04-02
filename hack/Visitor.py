@@ -3,6 +3,9 @@ from parser.VMVisitor import VMVisitor
 
 
 class Visitor(VMVisitor):
+    def __init__(self, namespace):
+        self.namespace = namespace
+
     # Visit a parse tree produced by VMParser#program.
     def visitProgram(self, ctx: VMParser.ProgramContext):
         return self.visitStatements(ctx.statements())
@@ -59,15 +62,11 @@ class Visitor(VMVisitor):
             )
         elif segment == "static":
             i = int(ctx.INT().getText())
-            global_name = (
-                "GeneratedGlobalConstant"
-            )  # TODO: This should be extracted from the file name
-
             return "\n".join(
                 [
                     f"// push static {i}",
                     # Load global address
-                    f"@{global_name}.{i}",
+                    f"@{self.namespace}.{i}",
                     "D=M",
                     # *sp = *addr
                     "@SP",  # Fetch the segment pointer
@@ -179,9 +178,6 @@ class Visitor(VMVisitor):
             )
         elif segment == "static":
             i = int(ctx.INT().getText())
-            global_name = (
-                "GeneratedGlobalConstant"
-            )  # TODO: This should be extracted from the file name
 
             return "\n".join(
                 [
@@ -194,7 +190,7 @@ class Visitor(VMVisitor):
                     "A=M",
                     "D=M",
                     # Store the new value
-                    f"@{global_name}.{i}",
+                    f"@{self.namespace}.{i}",
                     "M=D",
                 ]
             )
