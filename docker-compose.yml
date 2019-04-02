@@ -8,5 +8,8 @@ services:
 
   test:
     <<: *default
-    command:
-      pytest -vv
+    command: >
+      pytest
+        -vv
+        --black
+        --mccabe

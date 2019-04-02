@@ -5,5 +5,7 @@
 !test/
 !Pipfile
 !Pipfile.lock
+!pyproject.toml
+!setup.cfg
 !VM.g4
 !vm.py
