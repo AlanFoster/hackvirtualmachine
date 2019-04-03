@@ -254,26 +254,17 @@ def test_invalid_pop_pointer():
     )
 
 
-@pytest.mark.parametrize("operator,expected", [("add", "D=M+D"), ("sub", "D=M-D")])
+@pytest.mark.parametrize("operator,expected", [("add", "M=M+D"), ("sub", "M=M-D")])
 def test_math(operator, expected):
     vm_input = operator
     expected = combine(
         [
             f"// {operator}",
             "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
+            "AM=M-1",
             "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
+            "A=A-1",
             expected,
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
         ]
     )
 
@@ -322,13 +313,9 @@ def test_comparison_operators(operator, expected):
         [
             f"// {operator}",
             "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
+            "AM=M-1",
             "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
+            "A=A-1",
             "D=M-D",
             f"@{expected}.True.1",
             f"D;{expected}",
@@ -340,10 +327,8 @@ def test_comparison_operators(operator, expected):
             "D=-1",
             f"({expected}.Finally.1)",
             "@SP",
-            "A=M",
+            "A=M-1",
             "M=D",
-            "@SP",
-            "M=M+1",
         ]
         # fmt: on
     )
@@ -351,7 +336,7 @@ def test_comparison_operators(operator, expected):
     assert convert(vm_input) == expected
 
 
-@pytest.mark.parametrize("operator,expected", [("and", "D=D&M"), ("or", "D=D|M")])
+@pytest.mark.parametrize("operator,expected", [("and", "M=D&M"), ("or", "M=D|M")])
 def test_logical_operators(operator, expected):
     vm_input = operator
     expected = combine(
@@ -359,19 +344,10 @@ def test_logical_operators(operator, expected):
         [
             f"// {operator}",
             "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
+            "AM=M-1",
             "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
+            "A=A-1",
             expected,
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
         ]
         # fmt: on
     )

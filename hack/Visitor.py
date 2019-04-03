@@ -1,7 +1,6 @@
 from parser.VMParser import VMParser
 from parser.VMVisitor import VMVisitor
 
-
 class Visitor(VMVisitor):
     def __init__(self, generator):
         self.generator = generator

@@ -67,31 +67,16 @@ def binary_operation(operation):
             [
                 # SP--
                 "@SP",
-                "M=M-1",
+                "AM=M-1",
 
-                # Keep track of the first argument
-                "@SP",
-                "A=M",
+                # Store *sp within D
                 "D=M",
 
-                # SP--
-                "@SP",
-                "M=M-1",
-
-                # Lookup second number *sp
-                "A=M",
+                # Set address register to second number
+                "A=A-1",
             ] +
             # fmt: on
             operation(*args, **kwargs)
-            + [
-                # *sp = d
-                "@SP",
-                "A=M",
-                "M=D",
-                # sp++
-                "@SP",
-                "M=M+1",
-            ]
         )
 
     return wrapper
@@ -213,16 +198,20 @@ class Generator:
             "D=-1",
 
             f"({jump_name}.Finally.{self.comparison_count})",
+
+            "@SP",
+            "A=M-1",
+            "M=D"
         ]
         # fmt: on
 
     @binary_operation
     def visit_sub(self):
-        return ["D=M-D"]
+        return ["M=M-D"]
 
     @binary_operation
     def visit_add(self):
-        return ["D=M+D"]
+        return ["M=M+D"]
 
     @unary_operation
     def visit_neg(self):
@@ -230,11 +219,11 @@ class Generator:
 
     @binary_operation
     def visit_and(self):
-        return ["D=D&M"]
+        return ["M=D&M"]
 
     @binary_operation
     def visit_or(self):
-        return ["D=D|M"]
+        return ["M=D|M"]
 
     @unary_operation
     def visit_not(self):
