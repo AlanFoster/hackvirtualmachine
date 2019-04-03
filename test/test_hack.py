@@ -267,7 +267,6 @@ def test_math(operator, expected):
             "D=M",
             "@SP",
             "M=M-1",
-            "@SP",
             "A=M",
             expected,
             "@SP",

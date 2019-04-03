@@ -2,6 +2,7 @@ import antlr4
 from parser.VMLexer import VMLexer
 from parser.VMParser import VMParser
 from hack.Visitor import Visitor
+from .Generator import Generator
 
 
 class VmToHack:
@@ -12,5 +13,6 @@ class VmToHack:
         parser = VMParser(stream)
         tree = parser.program()
 
-        visitor = Visitor(namespace)
+        generator = Generator(namespace)
+        visitor = Visitor(generator)
         return visitor.visit(tree)
