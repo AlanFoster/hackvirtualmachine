@@ -87,7 +87,7 @@ class Visitor(VMVisitor):
                 target = "THAT"
             else:
                 raise ValueError(
-                    f'Pointer target may only be 0 or 1, instead received "{i}"'
+                    f'Pointer target may only be 0 (THIS) or 1 (THAT), instead received "{i}"'
                 )
 
             return "\n".join(
@@ -113,7 +113,7 @@ class Visitor(VMVisitor):
 
             if allocated_register > temp_registers_end:
                 raise ValueError(
-                    f'Unexpected temp register value: "{allocated_register}". This would cause overflow;.'
+                    f'Unexpected temp register value: "{allocated_register}". This would cause overflow. '
                     f"Available registers: R{temp_registers_start}-R{temp_registers_end}"
                 )
 
@@ -182,9 +182,9 @@ class Visitor(VMVisitor):
             temp_registers_end = 12
             allocated_register = temp_registers_start + i
 
-            if allocated_register < temp_registers_start:
+            if allocated_register > temp_registers_end:
                 raise ValueError(
-                    f'Unexpected temp register value: "{allocated_register}". This would cause underflow;.'
+                    f'Unexpected temp register value: "{allocated_register}". This would cause overflow. '
                     f"Available registers: R{temp_registers_start}-R{temp_registers_end}"
                 )
 
@@ -212,7 +212,7 @@ class Visitor(VMVisitor):
                 target = "THAT"
             else:
                 raise ValueError(
-                    f'Pointer target may only be 0 or 1, instead received "{i}"'
+                    f'Pointer target may only be 0 (THIS) or 1 (THAT), instead received "{i}"'
                 )
 
             return "\n".join(
@@ -359,6 +359,8 @@ class Visitor(VMVisitor):
             return "\n".join(
                 # fmt: off
                 [
+                    f"// {operator}",
+
                     # SP--
                     "@SP",
                     "M=M-1",
@@ -408,6 +410,8 @@ class Visitor(VMVisitor):
             return "\n".join(
                 # fmt: off
                 [
+                    f"// {operator}",
+
                     # SP--
                     "@SP",
                     "M=M-1",

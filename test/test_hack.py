@@ -1,4 +1,5 @@
 import antlr4
+import pytest
 from hack.VmToHack import VmToHack
 
 
@@ -30,36 +31,23 @@ def test_push_constant():
     assert convert(vm_input) == expected
 
 
-def test_push_local():
-    vm_input = "push local 6"
+@pytest.mark.parametrize(
+    "segment,index,hack_segment",
+    [
+        ("local", 10, "LCL"),
+        ("argument", 20, "ARG"),
+        ("this", 30, "THIS"),
+        ("that", 40, "THAT"),
+    ],
+)
+def test_push_segment(segment, index, hack_segment):
+    vm_input = f"push {segment} {index}"
     expected = combine(
         [
-            "// push local 6",
-            "@LCL",
+            f"// push {segment} {index}",
+            f"@{hack_segment}",
             "D=M",
-            "@6",
-            "D=D+A",
-            "A=D",
-            "D=M",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
-        ]
-    )
-
-    assert convert(vm_input) == expected
-
-
-def test_push_argument():
-    vm_input = "push argument 12"
-    expected = combine(
-        [
-            "// push argument 12",
-            "@ARG",
-            "D=M",
-            "@12",
+            f"@{index}",
             "D=D+A",
             "A=D",
             "D=M",
@@ -96,6 +84,15 @@ def test_push_temp():
     assert convert(vm_input) == expected
 
 
+def test_invalid_push_temp():
+    with pytest.raises(ValueError) as e:
+        convert("push temp 100")
+    assert (
+        str(e.value)
+        == 'Unexpected temp register value: "105". This would cause overflow. Available registers: R5-R12'
+    )
+
+
 def test_push_static():
     vm_input = "push static 3"
     expected = combine(
@@ -114,13 +111,14 @@ def test_push_static():
     assert convert(vm_input) == expected
 
 
-def test_push_pointer_this():
-    vm_input = "push pointer 0"
+@pytest.mark.parametrize("target,hack_name", [("0", "THIS"), ("1", "THAT")])
+def test_valid_push_pointer(target, hack_name):
+    vm_input = f"push pointer {target}"
     expected = combine(
         # fmt: off
         [
-            "// push pointer 0",
-            "@THIS",
+            f"// push pointer {target}",
+            f"@{hack_name}",
             "D=M",
             "@SP",
             "A=M",
@@ -134,24 +132,13 @@ def test_push_pointer_this():
     assert convert(vm_input) == expected
 
 
-def test_push_pointer_that():
-    vm_input = "push pointer 1"
-    expected = combine(
-        # fmt: off
-        [
-            "// push pointer 1",
-            "@THAT",
-            "D=M",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
-        ]
-        # fmt: on
+def test_invalid_push_pointer():
+    with pytest.raises(ValueError) as e:
+        convert("push pointer 100")
+    assert (
+        str(e.value)
+        == 'Pointer target may only be 0 (THIS) or 1 (THAT), instead received "100"'
     )
-
-    assert convert(vm_input) == expected
 
 
 def test_pop_temp():
@@ -174,16 +161,34 @@ def test_pop_temp():
     assert convert(vm_input) == expected
 
 
-def test_pop_local():
-    vm_input = "pop local 3"
+def test_invalid_pop_temp():
+    with pytest.raises(ValueError) as e:
+        convert("pop temp 100")
+    assert (
+        str(e.value)
+        == 'Unexpected temp register value: "105". This would cause overflow. Available registers: R5-R12'
+    )
+
+
+@pytest.mark.parametrize(
+    "segment,index,hack_segment",
+    [
+        ("local", 10, "LCL"),
+        ("argument", 20, "ARG"),
+        ("this", 30, "THIS"),
+        ("that", 40, "THAT"),
+    ],
+)
+def test_pop_segment(segment, index, hack_segment):
+    vm_input = f"pop {segment} {index}"
     expected = combine(
         [
-            "// pop local 3",
+            f"// pop {segment} {index}",
             "@SP",
             "M=M-1",
-            "@LCL",
+            f"@{hack_segment}",
             "D=M",
-            "@3",
+            f"@{index}",
             "D=D+A",
             "@R13",
             "M=D",
@@ -219,19 +224,20 @@ def test_pop_static():
     assert convert(vm_input) == expected
 
 
-def test_pop_pointer_this():
-    vm_input = "push pointer 0"
+@pytest.mark.parametrize("target,hack_name", [("0", "THIS"), ("1", "THAT")])
+def test_valid_pop_pointer(target, hack_name):
+    vm_input = f"pop pointer {target}"
     expected = combine(
         # fmt: off
         [
-            "// push pointer 0",
-            "@THIS",
-            "D=M",
+            f"// pop pointer {target}",
+            "@SP",
+            "M=M-1",
             "@SP",
             "A=M",
+            "D=M",
+            f"@{hack_name}",
             "M=D",
-            "@SP",
-            "M=M+1",
         ]
         # fmt: on
     )
@@ -239,31 +245,21 @@ def test_pop_pointer_this():
     assert convert(vm_input) == expected
 
 
-def test_pop_pointer_that():
-    vm_input = "push pointer 1"
-    expected = combine(
-        # fmt: off
-        [
-            "// push pointer 1",
-            "@THAT",
-            "D=M",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
-        ]
-        # fmt: on
+def test_invalid_pop_pointer():
+    with pytest.raises(ValueError) as e:
+        convert("pop pointer 200")
+    assert (
+        str(e.value)
+        == 'Pointer target may only be 0 (THIS) or 1 (THAT), instead received "200"'
     )
 
-    assert convert(vm_input) == expected
 
-
-def test_add():
-    vm_input = "add"
+@pytest.mark.parametrize("operator,expected", [("add", "D=M+D"), ("sub", "D=M-D")])
+def test_math(operator, expected):
+    vm_input = operator
     expected = combine(
         [
-            "// add",
+            f"// {operator}",
             "@SP",
             "M=M-1",
             "@SP",
@@ -273,33 +269,7 @@ def test_add():
             "M=M-1",
             "@SP",
             "A=M",
-            "D=M+D",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
-        ]
-    )
-
-    assert convert(vm_input) == expected
-
-
-def test_sub():
-    vm_input = "sub"
-    expected = combine(
-        [
-            "// sub",
-            "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
-            "D=M",
-            "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
-            "D=M-D",
+            expected,
             "@SP",
             "A=M",
             "M=D",
@@ -343,11 +313,15 @@ def test_not():
     assert convert(vm_input) == expected
 
 
-def test_eq():
-    vm_input = "eq"
+@pytest.mark.parametrize(
+    "operator,expected", [("eq", "JEQ"), ("gt", "JGT"), ("lt", "JLT")]
+)
+def test_comparison_operators(operator, expected):
+    vm_input = operator
     expected = combine(
         # fmt: off
         [
+            f"// {operator}",
             "@SP",
             "M=M-1",
             "@SP",
@@ -357,15 +331,15 @@ def test_eq():
             "M=M-1",
             "A=M",
             "D=M-D",
-            "@JEQ.True.1",
-            "D;JEQ",
-            "(JEQ.False.1)",
+            f"@{expected}.True.1",
+            f"D;{expected}",
+            f"({expected}.False.1)",
             "D=0",
-            "@JEQ.Finally.1",
+            f"@{expected}.Finally.1",
             "0;JMP",
-            "(JEQ.True.1)",
+            f"({expected}.True.1)",
             "D=-1",
-            "(JEQ.Finally.1)",
+            f"({expected}.Finally.1)",
             "@SP",
             "A=M",
             "M=D",
@@ -378,11 +352,13 @@ def test_eq():
     assert convert(vm_input) == expected
 
 
-def test_gt():
-    vm_input = "gt"
+@pytest.mark.parametrize("operator,expected", [("and", "D=D&M"), ("or", "D=D|M")])
+def test_logical_operators(operator, expected):
+    vm_input = operator
     expected = combine(
         # fmt: off
         [
+            f"// {operator}",
             "@SP",
             "M=M-1",
             "@SP",
@@ -391,103 +367,7 @@ def test_gt():
             "@SP",
             "M=M-1",
             "A=M",
-            "D=M-D",
-            "@JGT.True.1",
-            "D;JGT",
-            "(JGT.False.1)",
-            "D=0",
-            "@JGT.Finally.1",
-            "0;JMP",
-            "(JGT.True.1)",
-            "D=-1",
-            "(JGT.Finally.1)",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
-        ]
-        # fmt: on
-    )
-
-    assert convert(vm_input) == expected
-
-
-def test_lt():
-    vm_input = "lt"
-    expected = combine(
-        # fmt: off
-        [
-            "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
-            "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
-            "D=M-D",
-            "@JLT.True.1",
-            "D;JLT",
-            "(JLT.False.1)",
-            "D=0",
-            "@JLT.Finally.1",
-            "0;JMP",
-            "(JLT.True.1)",
-            "D=-1",
-            "(JLT.Finally.1)",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
-        ]
-        # fmt: on
-    )
-
-    assert convert(vm_input) == expected
-
-
-def test_and():
-    vm_input = "and"
-    expected = combine(
-        # fmt: off
-        [
-            "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
-            "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
-            "D=D&M",
-            "@SP",
-            "A=M",
-            "M=D",
-            "@SP",
-            "M=M+1",
-        ]
-        # fmt: on
-    )
-
-    assert convert(vm_input) == expected
-
-
-def test_or():
-    vm_input = "or"
-    expected = combine(
-        # fmt: off
-        [
-            "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
-            "D=M",
-            "@SP",
-            "M=M-1",
-            "A=M",
-            "D=D|M",
+            expected,
             "@SP",
             "A=M",
             "M=D",
