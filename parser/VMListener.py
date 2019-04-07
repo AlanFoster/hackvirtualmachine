@@ -107,6 +107,15 @@ class VMListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by VMParser#labelIdentifier.
+    def enterLabelIdentifier(self, ctx:VMParser.LabelIdentifierContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#labelIdentifier.
+    def exitLabelIdentifier(self, ctx:VMParser.LabelIdentifierContext):
+        pass
+
+
     # Enter a parse tree produced by VMParser#call.
     def enterCall(self, ctx:VMParser.CallContext):
         pass
@@ -116,12 +125,39 @@ class VMListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by VMParser#argumentCount.
+    def enterArgumentCount(self, ctx:VMParser.ArgumentCountContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#argumentCount.
+    def exitArgumentCount(self, ctx:VMParser.ArgumentCountContext):
+        pass
+
+
     # Enter a parse tree produced by VMParser#function.
     def enterFunction(self, ctx:VMParser.FunctionContext):
         pass
 
     # Exit a parse tree produced by VMParser#function.
     def exitFunction(self, ctx:VMParser.FunctionContext):
+        pass
+
+
+    # Enter a parse tree produced by VMParser#functionName.
+    def enterFunctionName(self, ctx:VMParser.FunctionNameContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#functionName.
+    def exitFunctionName(self, ctx:VMParser.FunctionNameContext):
+        pass
+
+
+    # Enter a parse tree produced by VMParser#localVariableCount.
+    def enterLocalVariableCount(self, ctx:VMParser.LocalVariableCountContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#localVariableCount.
+    def exitLocalVariableCount(self, ctx:VMParser.LocalVariableCountContext):
         pass
 
 

@@ -64,13 +64,33 @@ class VMVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by VMParser#labelIdentifier.
+    def visitLabelIdentifier(self, ctx:VMParser.LabelIdentifierContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by VMParser#call.
     def visitCall(self, ctx:VMParser.CallContext):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by VMParser#argumentCount.
+    def visitArgumentCount(self, ctx:VMParser.ArgumentCountContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by VMParser#function.
     def visitFunction(self, ctx:VMParser.FunctionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by VMParser#functionName.
+    def visitFunctionName(self, ctx:VMParser.FunctionNameContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by VMParser#localVariableCount.
+    def visitLocalVariableCount(self, ctx:VMParser.LocalVariableCountContext):
         return self.visitChildren(ctx)
 
 

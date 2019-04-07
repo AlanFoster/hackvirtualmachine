@@ -99,37 +99,37 @@ class Visitor(VMVisitor):
 
     # Visit a parse tree produced by VMParser#label.
     def visitLabel(self, ctx: VMParser.LabelContext):
-        label = ctx.IDENTIFIER().getText()
+        label = ctx.labelIdentifier().getText()
         comment = f"// label {label}\n"
 
         return comment + self.generator.visit_label(label)
 
     # Visit a parse tree produced by VMParser#goto.
     def visitGoto(self, ctx: VMParser.GotoContext):
-        label = ctx.IDENTIFIER().getText()
+        label = ctx.labelIdentifier().getText()
         comment = f"// goto {label}\n"
 
         return comment + self.generator.visit_goto(label)
 
     # Visit a parse tree produced by VMParser#ifGoto.
     def visitIfGoto(self, ctx: VMParser.IfGotoContext):
-        label = ctx.IDENTIFIER().getText()
+        label = ctx.labelIdentifier().getText()
         comment = f"// if-goto {label}\n"
 
         return comment + self.generator.visit_if_goto(label)
 
     # Visit a parse tree produced by VMParser#call.
     def visitCall(self, ctx: VMParser.CallContext):
-        name = ctx.IDENTIFIER().getText()
-        arguments = int(ctx.INT().getText())
-        command = f"call {name} {str(arguments)}"
+        name = ctx.functionName().getText()
+        argument_count = int(ctx.argumentCount().getText())
+        command = f"call {name} {argument_count}"
 
         raise ValueError(f"{command} not supported yet.")
 
     # Visit a parse tree produced by VMParser#function.
     def visitFunction(self, ctx: VMParser.FunctionContext):
-        name = ctx.IDENTIFIER().getText()
-        local_variables = int(ctx.INT().getText())
+        name = ctx.functionName().getText()
+        local_variables = int(ctx.localVariableCount().getText())
         command = f"function {name} {local_variables}"
 
         raise ValueError(f"{command} not supported yet.")

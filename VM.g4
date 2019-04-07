@@ -59,19 +59,31 @@ segment:
     ;
 
 goto:
-    GOTO IDENTIFIER;
+    GOTO labelIdentifier;
 
 ifGoto:
-    IF_GOTO IDENTIFIER;
+    IF_GOTO labelIdentifier;
 
 label:
-    LABEL IDENTIFIER;
+    LABEL labelIdentifier;
+
+labelIdentifier:
+    IDENTIFIER;
 
 call:
-    CALL IDENTIFIER INT;
+    CALL functionName argumentCount;
+
+argumentCount:
+    INT;
 
 function:
-    FUNCTION IDENTIFIER INT;
+    FUNCTION functionName localVariableCount;
+
+functionName:
+    IDENTIFIER;
+
+localVariableCount:
+    INT;
 
 // Note: `return` is a reserved word in python
 returnStatement:
