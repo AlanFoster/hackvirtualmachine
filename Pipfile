@@ -9,6 +9,7 @@ pytest-black = "*"
 pytest-mccabe = "*"
 pytest-pep8 = "*"
 pytest-flake8 = "*"
+pdbpp = "*"
 
 [packages]
 antlr4-python3-runtime = "*"
