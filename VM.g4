@@ -20,6 +20,9 @@ statement:
     | label
     | goto
     | ifGoto
+    | call
+    | function
+    | returnStatement
     ;
 
 push:
@@ -56,13 +59,23 @@ segment:
     ;
 
 goto:
-    GOTO LABEL_IDENTIFIER;
+    GOTO IDENTIFIER;
 
 ifGoto:
-    IF_GOTO LABEL_IDENTIFIER;
+    IF_GOTO IDENTIFIER;
 
 label:
-    LABEL LABEL_IDENTIFIER;
+    LABEL IDENTIFIER;
+
+call:
+    CALL IDENTIFIER INT;
+
+function:
+    FUNCTION IDENTIFIER INT;
+
+// Note: `return` is a reserved word in python
+returnStatement:
+    RETURN;
 
 /**
  * Lexer rules
@@ -101,8 +114,13 @@ LABEL: L A B E L;
 GOTO: G O T O;
 IF_GOTO: I F '-' G O T O;
 
+// Functions
+CALL: C A L L ;
+FUNCTION: F U N C T I O N;
+RETURN : R E T U R N ;
+
 // Identifiers
-LABEL_IDENTIFIER: [a-zA-Z_.:] [a-zA-Z_.:0-9]*;
+IDENTIFIER: [a-zA-Z_.:] [a-zA-Z_.:0-9]*;
 
 // Skip whitespaces and comments by default
 COMMENT: '//' ~( '\r' | '\n' )* -> channel(HIDDEN) ;

@@ -107,3 +107,30 @@ class VMListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by VMParser#call.
+    def enterCall(self, ctx:VMParser.CallContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#call.
+    def exitCall(self, ctx:VMParser.CallContext):
+        pass
+
+
+    # Enter a parse tree produced by VMParser#function.
+    def enterFunction(self, ctx:VMParser.FunctionContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#function.
+    def exitFunction(self, ctx:VMParser.FunctionContext):
+        pass
+
+
+    # Enter a parse tree produced by VMParser#returnStatement.
+    def enterReturnStatement(self, ctx:VMParser.ReturnStatementContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#returnStatement.
+    def exitReturnStatement(self, ctx:VMParser.ReturnStatementContext):
+        pass
+
+

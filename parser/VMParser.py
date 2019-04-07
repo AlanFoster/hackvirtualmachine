@@ -8,27 +8,33 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\34")
-        buf.write("B\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
-        buf.write("\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\3\2\3\2\3\2\3\3")
-        buf.write("\7\3\35\n\3\f\3\16\3 \13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4")
-        buf.write("\5\4)\n\4\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\7\3\7\3\b")
-        buf.write("\3\b\3\t\3\t\3\n\3\n\3\n\3\13\3\13\3\13\3\f\3\f\3\f\3")
-        buf.write("\f\2\2\r\2\4\6\b\n\f\16\20\22\24\26\2\5\3\2\6\b\3\2\t")
-        buf.write("\16\3\2\17\26\2=\2\30\3\2\2\2\4\36\3\2\2\2\6(\3\2\2\2")
-        buf.write("\b*\3\2\2\2\n.\3\2\2\2\f\62\3\2\2\2\16\64\3\2\2\2\20\66")
-        buf.write("\3\2\2\2\228\3\2\2\2\24;\3\2\2\2\26>\3\2\2\2\30\31\5\4")
-        buf.write("\3\2\31\32\7\2\2\3\32\3\3\2\2\2\33\35\5\6\4\2\34\33\3")
-        buf.write("\2\2\2\35 \3\2\2\2\36\34\3\2\2\2\36\37\3\2\2\2\37\5\3")
-        buf.write("\2\2\2 \36\3\2\2\2!)\5\b\5\2\")\5\n\6\2#)\5\f\7\2$)\5")
-        buf.write("\16\b\2%)\5\26\f\2&)\5\22\n\2\')\5\24\13\2(!\3\2\2\2(")
-        buf.write("\"\3\2\2\2(#\3\2\2\2($\3\2\2\2(%\3\2\2\2(&\3\2\2\2(\'")
-        buf.write("\3\2\2\2)\7\3\2\2\2*+\7\4\2\2+,\5\20\t\2,-\7\3\2\2-\t")
-        buf.write("\3\2\2\2./\7\5\2\2/\60\5\20\t\2\60\61\7\3\2\2\61\13\3")
-        buf.write("\2\2\2\62\63\t\2\2\2\63\r\3\2\2\2\64\65\t\3\2\2\65\17")
-        buf.write("\3\2\2\2\66\67\t\4\2\2\67\21\3\2\2\289\7\30\2\29:\7\32")
-        buf.write("\2\2:\23\3\2\2\2;<\7\31\2\2<=\7\32\2\2=\25\3\2\2\2>?\7")
-        buf.write("\27\2\2?@\7\32\2\2@\27\3\2\2\2\4\36(")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\37")
+        buf.write("U\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
+        buf.write("\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16\t")
+        buf.write("\16\4\17\t\17\3\2\3\2\3\2\3\3\7\3#\n\3\f\3\16\3&\13\3")
+        buf.write("\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\62\n\4\3")
+        buf.write("\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\7\3\7\3\b\3\b\3\t\3\t")
+        buf.write("\3\n\3\n\3\n\3\13\3\13\3\13\3\f\3\f\3\f\3\r\3\r\3\r\3")
+        buf.write("\r\3\16\3\16\3\16\3\16\3\17\3\17\3\17\2\2\20\2\4\6\b\n")
+        buf.write("\f\16\20\22\24\26\30\32\34\2\5\3\2\6\b\3\2\t\16\3\2\17")
+        buf.write("\26\2P\2\36\3\2\2\2\4$\3\2\2\2\6\61\3\2\2\2\b\63\3\2\2")
+        buf.write("\2\n\67\3\2\2\2\f;\3\2\2\2\16=\3\2\2\2\20?\3\2\2\2\22")
+        buf.write("A\3\2\2\2\24D\3\2\2\2\26G\3\2\2\2\30J\3\2\2\2\32N\3\2")
+        buf.write("\2\2\34R\3\2\2\2\36\37\5\4\3\2\37 \7\2\2\3 \3\3\2\2\2")
+        buf.write("!#\5\6\4\2\"!\3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%")
+        buf.write("\5\3\2\2\2&$\3\2\2\2\'\62\5\b\5\2(\62\5\n\6\2)\62\5\f")
+        buf.write("\7\2*\62\5\16\b\2+\62\5\26\f\2,\62\5\22\n\2-\62\5\24\13")
+        buf.write("\2.\62\5\30\r\2/\62\5\32\16\2\60\62\5\34\17\2\61\'\3\2")
+        buf.write("\2\2\61(\3\2\2\2\61)\3\2\2\2\61*\3\2\2\2\61+\3\2\2\2\61")
+        buf.write(",\3\2\2\2\61-\3\2\2\2\61.\3\2\2\2\61/\3\2\2\2\61\60\3")
+        buf.write("\2\2\2\62\7\3\2\2\2\63\64\7\4\2\2\64\65\5\20\t\2\65\66")
+        buf.write("\7\3\2\2\66\t\3\2\2\2\678\7\5\2\289\5\20\t\29:\7\3\2\2")
+        buf.write(":\13\3\2\2\2;<\t\2\2\2<\r\3\2\2\2=>\t\3\2\2>\17\3\2\2")
+        buf.write("\2?@\t\4\2\2@\21\3\2\2\2AB\7\30\2\2BC\7\35\2\2C\23\3\2")
+        buf.write("\2\2DE\7\31\2\2EF\7\35\2\2F\25\3\2\2\2GH\7\27\2\2HI\7")
+        buf.write("\35\2\2I\27\3\2\2\2JK\7\32\2\2KL\7\35\2\2LM\7\3\2\2M\31")
+        buf.write("\3\2\2\2NO\7\33\2\2OP\7\35\2\2PQ\7\3\2\2Q\33\3\2\2\2R")
+        buf.write("S\7\34\2\2S\35\3\2\2\2\4$\61")
         return buf.getvalue()
 
 
@@ -47,8 +53,8 @@ class VMParser ( Parser ):
     symbolicNames = [ "<INVALID>", "INT", "PUSH", "POP", "ADD", "SUB", "NEG", 
                       "LT", "EQ", "GT", "AND", "OR", "NOT", "LOCAL", "ARGUMENT", 
                       "THIS", "THAT", "CONSTANT", "STATIC", "POINTER", "TEMP", 
-                      "LABEL", "GOTO", "IF_GOTO", "LABEL_IDENTIFIER", "COMMENT", 
-                      "WS" ]
+                      "LABEL", "GOTO", "IF_GOTO", "CALL", "FUNCTION", "RETURN", 
+                      "IDENTIFIER", "COMMENT", "WS" ]
 
     RULE_program = 0
     RULE_statements = 1
@@ -61,10 +67,13 @@ class VMParser ( Parser ):
     RULE_goto = 8
     RULE_ifGoto = 9
     RULE_label = 10
+    RULE_call = 11
+    RULE_function = 12
+    RULE_returnStatement = 13
 
     ruleNames =  [ "program", "statements", "statement", "push", "pop", 
                    "arithmetic", "logical", "segment", "goto", "ifGoto", 
-                   "label" ]
+                   "label", "call", "function", "returnStatement" ]
 
     EOF = Token.EOF
     INT=1
@@ -90,9 +99,12 @@ class VMParser ( Parser ):
     LABEL=21
     GOTO=22
     IF_GOTO=23
-    LABEL_IDENTIFIER=24
-    COMMENT=25
-    WS=26
+    CALL=24
+    FUNCTION=25
+    RETURN=26
+    IDENTIFIER=27
+    COMMENT=28
+    WS=29
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -142,9 +154,9 @@ class VMParser ( Parser ):
         self.enterRule(localctx, 0, self.RULE_program)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 22
+            self.state = 28
             self.statements()
-            self.state = 23
+            self.state = 29
             self.match(VMParser.EOF)
         except RecognitionException as re:
             localctx.exception = re
@@ -195,13 +207,13 @@ class VMParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 28
+            self.state = 34
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << VMParser.PUSH) | (1 << VMParser.POP) | (1 << VMParser.ADD) | (1 << VMParser.SUB) | (1 << VMParser.NEG) | (1 << VMParser.LT) | (1 << VMParser.EQ) | (1 << VMParser.GT) | (1 << VMParser.AND) | (1 << VMParser.OR) | (1 << VMParser.NOT) | (1 << VMParser.LABEL) | (1 << VMParser.GOTO) | (1 << VMParser.IF_GOTO))) != 0):
-                self.state = 25
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << VMParser.PUSH) | (1 << VMParser.POP) | (1 << VMParser.ADD) | (1 << VMParser.SUB) | (1 << VMParser.NEG) | (1 << VMParser.LT) | (1 << VMParser.EQ) | (1 << VMParser.GT) | (1 << VMParser.AND) | (1 << VMParser.OR) | (1 << VMParser.NOT) | (1 << VMParser.LABEL) | (1 << VMParser.GOTO) | (1 << VMParser.IF_GOTO) | (1 << VMParser.CALL) | (1 << VMParser.FUNCTION) | (1 << VMParser.RETURN))) != 0):
+                self.state = 31
                 self.statement()
-                self.state = 30
+                self.state = 36
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -248,6 +260,18 @@ class VMParser ( Parser ):
             return self.getTypedRuleContext(VMParser.IfGotoContext,0)
 
 
+        def call(self):
+            return self.getTypedRuleContext(VMParser.CallContext,0)
+
+
+        def function(self):
+            return self.getTypedRuleContext(VMParser.FunctionContext,0)
+
+
+        def returnStatement(self):
+            return self.getTypedRuleContext(VMParser.ReturnStatementContext,0)
+
+
         def getRuleIndex(self):
             return VMParser.RULE_statement
 
@@ -273,43 +297,58 @@ class VMParser ( Parser ):
         localctx = VMParser.StatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 4, self.RULE_statement)
         try:
-            self.state = 38
+            self.state = 47
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [VMParser.PUSH]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 31
+                self.state = 37
                 self.push()
                 pass
             elif token in [VMParser.POP]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 32
+                self.state = 38
                 self.pop()
                 pass
             elif token in [VMParser.ADD, VMParser.SUB, VMParser.NEG]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 33
+                self.state = 39
                 self.arithmetic()
                 pass
             elif token in [VMParser.LT, VMParser.EQ, VMParser.GT, VMParser.AND, VMParser.OR, VMParser.NOT]:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 34
+                self.state = 40
                 self.logical()
                 pass
             elif token in [VMParser.LABEL]:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 35
+                self.state = 41
                 self.label()
                 pass
             elif token in [VMParser.GOTO]:
                 self.enterOuterAlt(localctx, 6)
-                self.state = 36
+                self.state = 42
                 self.goto()
                 pass
             elif token in [VMParser.IF_GOTO]:
                 self.enterOuterAlt(localctx, 7)
-                self.state = 37
+                self.state = 43
                 self.ifGoto()
+                pass
+            elif token in [VMParser.CALL]:
+                self.enterOuterAlt(localctx, 8)
+                self.state = 44
+                self.call()
+                pass
+            elif token in [VMParser.FUNCTION]:
+                self.enterOuterAlt(localctx, 9)
+                self.state = 45
+                self.function()
+                pass
+            elif token in [VMParser.RETURN]:
+                self.enterOuterAlt(localctx, 10)
+                self.state = 46
+                self.returnStatement()
                 pass
             else:
                 raise NoViableAltException(self)
@@ -365,11 +404,11 @@ class VMParser ( Parser ):
         self.enterRule(localctx, 6, self.RULE_push)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 40
+            self.state = 49
             self.match(VMParser.PUSH)
-            self.state = 41
+            self.state = 50
             self.segment()
-            self.state = 42
+            self.state = 51
             self.match(VMParser.INT)
         except RecognitionException as re:
             localctx.exception = re
@@ -422,11 +461,11 @@ class VMParser ( Parser ):
         self.enterRule(localctx, 8, self.RULE_pop)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 44
+            self.state = 53
             self.match(VMParser.POP)
-            self.state = 45
+            self.state = 54
             self.segment()
-            self.state = 46
+            self.state = 55
             self.match(VMParser.INT)
         except RecognitionException as re:
             localctx.exception = re
@@ -479,7 +518,7 @@ class VMParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 48
+            self.state = 57
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << VMParser.ADD) | (1 << VMParser.SUB) | (1 << VMParser.NEG))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -546,7 +585,7 @@ class VMParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 50
+            self.state = 59
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << VMParser.LT) | (1 << VMParser.EQ) | (1 << VMParser.GT) | (1 << VMParser.AND) | (1 << VMParser.OR) | (1 << VMParser.NOT))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -619,7 +658,7 @@ class VMParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 52
+            self.state = 61
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << VMParser.LOCAL) | (1 << VMParser.ARGUMENT) | (1 << VMParser.THIS) | (1 << VMParser.THAT) | (1 << VMParser.CONSTANT) | (1 << VMParser.STATIC) | (1 << VMParser.POINTER) | (1 << VMParser.TEMP))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -644,8 +683,8 @@ class VMParser ( Parser ):
         def GOTO(self):
             return self.getToken(VMParser.GOTO, 0)
 
-        def LABEL_IDENTIFIER(self):
-            return self.getToken(VMParser.LABEL_IDENTIFIER, 0)
+        def IDENTIFIER(self):
+            return self.getToken(VMParser.IDENTIFIER, 0)
 
         def getRuleIndex(self):
             return VMParser.RULE_goto
@@ -673,10 +712,10 @@ class VMParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_goto)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 54
+            self.state = 63
             self.match(VMParser.GOTO)
-            self.state = 55
-            self.match(VMParser.LABEL_IDENTIFIER)
+            self.state = 64
+            self.match(VMParser.IDENTIFIER)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -695,8 +734,8 @@ class VMParser ( Parser ):
         def IF_GOTO(self):
             return self.getToken(VMParser.IF_GOTO, 0)
 
-        def LABEL_IDENTIFIER(self):
-            return self.getToken(VMParser.LABEL_IDENTIFIER, 0)
+        def IDENTIFIER(self):
+            return self.getToken(VMParser.IDENTIFIER, 0)
 
         def getRuleIndex(self):
             return VMParser.RULE_ifGoto
@@ -724,10 +763,10 @@ class VMParser ( Parser ):
         self.enterRule(localctx, 18, self.RULE_ifGoto)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 57
+            self.state = 66
             self.match(VMParser.IF_GOTO)
-            self.state = 58
-            self.match(VMParser.LABEL_IDENTIFIER)
+            self.state = 67
+            self.match(VMParser.IDENTIFIER)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -746,8 +785,8 @@ class VMParser ( Parser ):
         def LABEL(self):
             return self.getToken(VMParser.LABEL, 0)
 
-        def LABEL_IDENTIFIER(self):
-            return self.getToken(VMParser.LABEL_IDENTIFIER, 0)
+        def IDENTIFIER(self):
+            return self.getToken(VMParser.IDENTIFIER, 0)
 
         def getRuleIndex(self):
             return VMParser.RULE_label
@@ -775,10 +814,168 @@ class VMParser ( Parser ):
         self.enterRule(localctx, 20, self.RULE_label)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 60
+            self.state = 69
             self.match(VMParser.LABEL)
-            self.state = 61
-            self.match(VMParser.LABEL_IDENTIFIER)
+            self.state = 70
+            self.match(VMParser.IDENTIFIER)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class CallContext(ParserRuleContext):
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def CALL(self):
+            return self.getToken(VMParser.CALL, 0)
+
+        def IDENTIFIER(self):
+            return self.getToken(VMParser.IDENTIFIER, 0)
+
+        def INT(self):
+            return self.getToken(VMParser.INT, 0)
+
+        def getRuleIndex(self):
+            return VMParser.RULE_call
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterCall" ):
+                listener.enterCall(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitCall" ):
+                listener.exitCall(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCall" ):
+                return visitor.visitCall(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def call(self):
+
+        localctx = VMParser.CallContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 22, self.RULE_call)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 72
+            self.match(VMParser.CALL)
+            self.state = 73
+            self.match(VMParser.IDENTIFIER)
+            self.state = 74
+            self.match(VMParser.INT)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class FunctionContext(ParserRuleContext):
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def FUNCTION(self):
+            return self.getToken(VMParser.FUNCTION, 0)
+
+        def IDENTIFIER(self):
+            return self.getToken(VMParser.IDENTIFIER, 0)
+
+        def INT(self):
+            return self.getToken(VMParser.INT, 0)
+
+        def getRuleIndex(self):
+            return VMParser.RULE_function
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunction" ):
+                listener.enterFunction(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunction" ):
+                listener.exitFunction(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunction" ):
+                return visitor.visitFunction(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def function(self):
+
+        localctx = VMParser.FunctionContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 24, self.RULE_function)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 76
+            self.match(VMParser.FUNCTION)
+            self.state = 77
+            self.match(VMParser.IDENTIFIER)
+            self.state = 78
+            self.match(VMParser.INT)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ReturnStatementContext(ParserRuleContext):
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def RETURN(self):
+            return self.getToken(VMParser.RETURN, 0)
+
+        def getRuleIndex(self):
+            return VMParser.RULE_returnStatement
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterReturnStatement" ):
+                listener.enterReturnStatement(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitReturnStatement" ):
+                listener.exitReturnStatement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitReturnStatement" ):
+                return visitor.visitReturnStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def returnStatement(self):
+
+        localctx = VMParser.ReturnStatementContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 26, self.RULE_returnStatement)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 80
+            self.match(VMParser.RETURN)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)

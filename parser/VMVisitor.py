@@ -64,5 +64,20 @@ class VMVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by VMParser#call.
+    def visitCall(self, ctx:VMParser.CallContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by VMParser#function.
+    def visitFunction(self, ctx:VMParser.FunctionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by VMParser#returnStatement.
+    def visitReturnStatement(self, ctx:VMParser.ReturnStatementContext):
+        return self.visitChildren(ctx)
+
+
 
 del VMParser

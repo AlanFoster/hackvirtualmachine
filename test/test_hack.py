@@ -395,3 +395,21 @@ def test_if_goto():
     )
 
     assert convert(vm_input) == expected
+
+
+def test_call():
+    with pytest.raises(ValueError) as e:
+        convert("call function_name 4")
+    assert str(e.value) == "call function_name 4 not supported yet."
+
+
+def test_function():
+    with pytest.raises(ValueError) as e:
+        convert("function function_name 4")
+    assert str(e.value) == "function function_name 4 not supported yet."
+
+
+def test_return():
+    with pytest.raises(ValueError) as e:
+        convert("return")
+    assert str(e.value) == "return not supported yet."
