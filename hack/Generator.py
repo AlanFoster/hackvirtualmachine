@@ -26,10 +26,7 @@ def pop_operation(operation):
             [
                 # Decrement stack, sp--
                 "@SP",
-                "M=M-1",
-                # Fetch *SP
-                "@SP",
-                "A=M",
+                "AM=M-1",
                 "D=M",
             ]
             + operation(*args, **kwargs)
@@ -158,19 +155,15 @@ class Generator:
             f"@{self.hack_segment_labels[segment]}",  # Load the value stored in segment
             "D=M",
             f"@{i}",  # Load i
-            "D=D+A",  # D is now addr = LCL + i
-            "A=D",  # Set address register to addr
+            "A=D+A",  # Set address register to addr
             "D=M",  # Load the value stored within addr, i.e. *addr
         ]
 
     @push_operation
     def visit_push_temp(self, i):
         return [
-            # Calculating addr, where addr = LCL + i
-            f"@{temp_register(i)}",  # Load the value stored in LCL
-            "D=A",  # D is now addr = temp_registers_start + i
-            "A=D",  # Set address register to addr
-            "D=M",  # Load the value stored within addr, i.e. *addr
+            f"@{temp_register(i)}",
+            "D=M",
         ]
 
     @binary_operation

@@ -48,8 +48,7 @@ def test_push_segment(segment, index, hack_segment):
             f"@{hack_segment}",
             "D=M",
             f"@{index}",
-            "D=D+A",
-            "A=D",
+            "A=D+A",
             "D=M",
             "@SP",
             "A=M",
@@ -69,8 +68,6 @@ def test_push_temp():
         [
             "// push temp 3",
             "@8",
-            "D=A",
-            "A=D",
             "D=M",
             "@SP",
             "A=M",
@@ -148,12 +145,10 @@ def test_pop_temp():
         [
             "// pop temp 3",
             "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
+            "AM=M-1",
             "D=M",
             "@8",
-            "M=D"
+            "M=D",
         ]
         # fmt: on
     )
@@ -209,16 +204,16 @@ def test_pop_segment(segment, index, hack_segment):
 def test_pop_static():
     vm_input = "pop static 3"
     expected = combine(
+        # fmt: off
         [
             "// pop static 3",
             "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
+            "AM=M-1",
             "D=M",
             "@mock_global_namespace.3",
             "M=D",
         ]
+        # fmt: on
     )
 
     assert convert(vm_input) == expected
@@ -232,9 +227,7 @@ def test_valid_pop_pointer(target, hack_name):
         [
             f"// pop pointer {target}",
             "@SP",
-            "M=M-1",
-            "@SP",
-            "A=M",
+            "AM=M-1",
             "D=M",
             f"@{hack_name}",
             "M=D",
@@ -258,6 +251,7 @@ def test_invalid_pop_pointer():
 def test_math(operator, expected):
     vm_input = operator
     expected = combine(
+        # fmt: off
         [
             f"// {operator}",
             "@SP",
@@ -266,6 +260,7 @@ def test_math(operator, expected):
             "A=A-1",
             expected,
         ]
+        # fmt: on
     )
 
     assert convert(vm_input) == expected
