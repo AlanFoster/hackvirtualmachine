@@ -351,18 +351,47 @@ def test_logical_operators(operator, expected):
 
 
 def test_label():
-    with pytest.raises(ValueError) as e:
-        convert("label LOOP_START")
-    assert str(e.value) == "label LOOP_START not supported yet."
+    vm_input = "label LOOP_START"
+    expected = combine(
+        # fmt: off
+        [
+            "// label LOOP_START",
+            "(LOOP_START)"
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
 
 
 def test_goto():
-    with pytest.raises(ValueError) as e:
-        convert("goto LOOP_START")
-    assert str(e.value) == "goto LOOP_START not supported yet."
+    vm_input = "goto LOOP_START"
+    expected = combine(
+        # fmt: off
+        [
+            "// goto LOOP_START",
+            "@LOOP_START",
+            "0;JMP"
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
 
 
 def test_if_goto():
-    with pytest.raises(ValueError) as e:
-        convert("if-goto LOOP_START")
-    assert str(e.value) == "if-goto LOOP_START not supported yet."
+    vm_input = "if-goto LOOP_START"
+    expected = combine(
+        # fmt: off
+        [
+            "// if-goto LOOP_START",
+            "@SP",
+            "AM=M-1",
+            "D=M",
+            "@LOOP_START",
+            "D;JNE",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected

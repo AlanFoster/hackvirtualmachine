@@ -276,3 +276,31 @@ class Generator:
                 "M=0",
             ]
         )
+
+    def visit_label(self, label):
+        return f"({label})"
+
+    def visit_goto(self, label):
+        return "\n".join(
+            # fmt: off
+            [
+                f"@{label}",
+                "0;JMP"
+            ]
+            # fmt: on
+        )
+
+    def visit_if_goto(self, label):
+        # condition=pop()
+        # if condition, don't jump.
+        return "\n".join(
+            # fmt: off
+            [
+                "@SP",
+                "AM=M-1",
+                "D=M",
+                f"@{label}",
+                "D;JNE"
+            ]
+            # fmt: on
+        )
