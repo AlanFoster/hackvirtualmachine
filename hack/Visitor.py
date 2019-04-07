@@ -96,3 +96,18 @@ class Visitor(VMVisitor):
             return comment + self.generator.visit_or()
         else:
             raise ValueError(f'Unexpected logical operation "{operator}"')
+
+    # Visit a parse tree produced by VMParser#label.
+    def visitLabel(self, ctx: VMParser.LabelContext):
+        label = ctx.LABEL_IDENTIFIER().getText()
+        raise ValueError(f"label {label} not supported yet.")
+
+    # Visit a parse tree produced by VMParser#goto.
+    def visitGoto(self, ctx: VMParser.GotoContext):
+        label = ctx.LABEL_IDENTIFIER().getText()
+        raise ValueError(f"goto {label} not supported yet.")
+
+    # Visit a parse tree produced by VMParser#ifGoto.
+    def visitIfGoto(self, ctx: VMParser.IfGotoContext):
+        label = ctx.LABEL_IDENTIFIER().getText()
+        raise ValueError(f"if-goto {label} not supported yet.")

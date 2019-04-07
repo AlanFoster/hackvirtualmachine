@@ -49,5 +49,20 @@ class VMVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by VMParser#goto.
+    def visitGoto(self, ctx:VMParser.GotoContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by VMParser#ifGoto.
+    def visitIfGoto(self, ctx:VMParser.IfGotoContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by VMParser#label.
+    def visitLabel(self, ctx:VMParser.LabelContext):
+        return self.visitChildren(ctx)
+
+
 
 del VMParser

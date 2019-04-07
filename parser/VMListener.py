@@ -80,3 +80,30 @@ class VMListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by VMParser#goto.
+    def enterGoto(self, ctx:VMParser.GotoContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#goto.
+    def exitGoto(self, ctx:VMParser.GotoContext):
+        pass
+
+
+    # Enter a parse tree produced by VMParser#ifGoto.
+    def enterIfGoto(self, ctx:VMParser.IfGotoContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#ifGoto.
+    def exitIfGoto(self, ctx:VMParser.IfGotoContext):
+        pass
+
+
+    # Enter a parse tree produced by VMParser#label.
+    def enterLabel(self, ctx:VMParser.LabelContext):
+        pass
+
+    # Exit a parse tree produced by VMParser#label.
+    def exitLabel(self, ctx:VMParser.LabelContext):
+        pass
+
+

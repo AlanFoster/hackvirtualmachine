@@ -17,6 +17,9 @@ statement:
     | pop
     | arithmetic
     | logical
+    | label
+    | goto
+    | ifGoto
     ;
 
 push:
@@ -52,6 +55,15 @@ segment:
     | TEMP
     ;
 
+goto:
+    GOTO LABEL_IDENTIFIER;
+
+ifGoto:
+    IF_GOTO LABEL_IDENTIFIER;
+
+label:
+    LABEL LABEL_IDENTIFIER;
+
 /**
  * Lexer rules
  */
@@ -83,6 +95,14 @@ CONSTANT: C O N S T A N T ;
 STATIC: S T A T I C ;
 POINTER: P O I N T E R ;
 TEMP: T E M P ;
+
+// Control flow
+LABEL: L A B E L;
+GOTO: G O T O;
+IF_GOTO: I F '-' G O T O;
+
+// Identifiers
+LABEL_IDENTIFIER: [a-zA-Z_.:] [a-zA-Z_.:0-9]*;
 
 // Skip whitespaces and comments by default
 COMMENT: '//' ~( '\r' | '\n' )* -> channel(HIDDEN) ;
