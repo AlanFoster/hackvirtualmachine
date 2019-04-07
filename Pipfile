@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-black = "*"
-pytest-mccabe = "*"
 pytest-pep8 = "*"
 pytest-flake8 = "*"
 pdbpp = "*"
