@@ -117,7 +117,8 @@ class Generator:
         "eq": "JEQ",
         "gt": "JGT",
         "lt": "JLT"
-    }  # fmt: on
+    }
+    # fmt: on
 
     def __init__(self, namespace):
         self.namespace = namespace
@@ -161,10 +162,7 @@ class Generator:
 
     @push_operation
     def visit_push_temp(self, i):
-        return [
-            f"@{temp_register(i)}",
-            "D=M",
-        ]
+        return [f"@{temp_register(i)}", "D=M"]
 
     @binary_operation
     def visit_comparison_operator(self, operator):
@@ -303,4 +301,68 @@ class Generator:
                 "D;JNE"
             ]
             # fmt: on
+        )
+
+    def visit_function(self, name, local_variable_count):
+        # Label the current function so that is can be jumped to, and initialize all local variables to zero
+        return "\n".join(
+            [f"({self.namespace}.{name})"]
+            + [self.visit_push_constant(0)] * local_variable_count
+        )
+
+    def visit_return(self):
+        # At a high level this performs:
+        #   endFrame = LCL
+        #   returnAddress = *(endFrame - frame_size)
+        #   *arg = pop()
+        #   sp = arg + 1
+        #   Recover previous frame's state
+        #   that = *(endFrame - 1)
+        #   this = *(endFrame - 2)
+        #   arg = *(endFrame - 3)
+        #   lcl = *(endFrame - 4)
+        #   goto returnAddress
+
+        restore_frames = []
+        for frame in ["THAT", "THIS", "ARG", "LCL"]:
+            # fmt: on
+            restore_frames += [
+                "@R13",
+                "M=M-1",
+                "A=M",
+                "D=M",
+                f"@{frame}",
+                "M=D"
+            ]
+            # fmt: on
+
+        return "\n".join(
+            [
+                # R13 = endFrame
+                "@LCL",
+                "D=M",
+                "@R13",
+                "MD=D",
+                # R14 = *(endFrame - 5)
+                "@5",
+                "A=D-A",
+                "D=M",
+                "@R14",
+                "M=D",
+                # *arg = pop()
+                "@SP",
+                "A=M-1",
+                "D=M",
+                "@ARG",
+                "A=M",
+                "M=D",
+                # # sp = arg + 1
+                "@ARG",
+                "D=M+1",
+                "@SP",
+                "M=D",
+            ]
+            + restore_frames
+            # goto returnAddress
+            + ["@R14", "A=M", "0;JMP"]
         )

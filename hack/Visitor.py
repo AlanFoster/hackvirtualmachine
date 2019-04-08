@@ -122,19 +122,20 @@ class Visitor(VMVisitor):
     def visitCall(self, ctx: VMParser.CallContext):
         name = ctx.functionName().getText()
         argument_count = int(ctx.argumentCount().getText())
-        command = f"call {name} {argument_count}"
+        comment = f"call {name} {argument_count}"
 
-        raise ValueError(f"{command} not supported yet.")
+        raise ValueError(f"{comment} not supported yet.")
 
     # Visit a parse tree produced by VMParser#function.
     def visitFunction(self, ctx: VMParser.FunctionContext):
         name = ctx.functionName().getText()
-        local_variables = int(ctx.localVariableCount().getText())
-        command = f"function {name} {local_variables}"
+        local_variable_count = int(ctx.localVariableCount().getText())
+        comment = f"// function {name} {local_variable_count}\n"
 
-        raise ValueError(f"{command} not supported yet.")
+        return comment + self.generator.visit_function(name, local_variable_count)
 
     # Visit a parse tree produced by VMParser#returnStatement.
     def visitReturnStatement(self, ctx: VMParser.ReturnStatementContext):
-        command = "return"
-        raise ValueError(f"{command} not supported yet.")
+        comment = "// return\n"
+
+        return comment + self.generator.visit_return()

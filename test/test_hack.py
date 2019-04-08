@@ -404,12 +404,89 @@ def test_call():
 
 
 def test_function():
-    with pytest.raises(ValueError) as e:
-        convert("function function_name 4")
-    assert str(e.value) == "function function_name 4 not supported yet."
+    vm_input = "function function_name 2"
+    expected = combine(
+        # fmt: off
+        [
+            "// function function_name 2",
+            "(mock_global_namespace.function_name)",
+            # First local variable - `push constant 0`
+            "@0",
+            "D=A",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+            # Second local variable - `push constant 0`
+            "@0",
+            "D=A",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
 
 
 def test_return():
-    with pytest.raises(ValueError) as e:
-        convert("return")
-    assert str(e.value) == "return not supported yet."
+    vm_input = "return"
+    expected = combine(
+        # fmt: off
+        [
+            "// return",
+            "@LCL",
+            "D=M",
+            "@R13",
+            "MD=D",
+            "@5",
+            "A=D-A",
+            "D=M",
+            "@R14",
+            "M=D",
+            "@SP",
+            "A=M-1",
+            "D=M",
+            "@ARG",
+            "A=M",
+            "M=D",
+            "@ARG",
+            "D=M+1",
+            "@SP",
+            "M=D",
+            "@R13",
+            "M=M-1",
+            "A=M",
+            "D=M",
+            "@THAT",
+            "M=D",
+            "@R13",
+            "M=M-1",
+            "A=M",
+            "D=M",
+            "@THIS",
+            "M=D",
+            "@R13",
+            "M=M-1",
+            "A=M",
+            "D=M",
+            "@ARG",
+            "M=D",
+            "@R13",
+            "M=M-1",
+            "A=M",
+            "D=M",
+            "@LCL",
+            "M=D",
+            "@R14",
+            "A=M",
+            "0;JMP",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
