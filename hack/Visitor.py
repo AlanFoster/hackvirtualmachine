@@ -12,20 +12,8 @@ class Visitor(VMVisitor):
 
     # Visit a parse tree produced by VMParser#statements.
     def visitStatements(self, ctx: VMParser.StatementsContext):
-        preamble = [
-            # "// Set SP pointer",
-            # "@20",
-            # "D=A",
-            # "@SP",
-            # "M=D",
-            # "// Set local pointer",
-            # "@25",
-            # "D=A",
-            # "@LCL",
-            # "M=D",
-        ]
         instructions = [self.visit(child) for child in ctx.getChildren()]
-        return "\n".join(preamble + instructions) + "\n"
+        return "\n".join(instructions) + "\n"
 
     # Visit a parse tree produced by VMParser#statement.
     def visitStatement(self, ctx: VMParser.StatementContext):
@@ -38,15 +26,15 @@ class Visitor(VMVisitor):
         comment = f"// push {segment} {i}\n"
 
         if segment == "constant":
-            return comment + self.generator.visit_push_constant(i)
+            return comment + self.generator.push_constant(i)
         elif segment == "static":
-            return comment + self.generator.visit_push_static(i)
+            return comment + self.generator.push_static(i)
         elif segment == "pointer":
-            return comment + self.generator.visit_push_pointer(i)
+            return comment + self.generator.push_pointer(i)
         elif segment == "temp":
-            return comment + self.generator.visit_push_temp(i)
+            return comment + self.generator.push_temp(i)
         elif segment in self.generator.hack_segment_labels:
-            return comment + self.generator.visit_push_segment(segment, i)
+            return comment + self.generator.push_segment(segment, i)
         else:
             raise ValueError(f'unexpected segment value: "{segment}"')
 
@@ -57,13 +45,13 @@ class Visitor(VMVisitor):
         comment = f"// pop {segment} {i}\n"
 
         if segment == "temp":
-            return comment + self.generator.visit_pop_temp(i)
+            return comment + self.generator.pop_temp(i)
         elif segment == "pointer":
-            return comment + self.generator.visit_pop_pointer(i)
+            return comment + self.generator.pop_pointer(i)
         elif segment == "static":
-            return comment + self.generator.visit_pop_static(i)
+            return comment + self.generator.pop_static(i)
         elif segment in self.generator.hack_segment_labels:
-            return comment + self.generator.visit_pop_segment(segment, i)
+            return comment + self.generator.pop_segment(segment, i)
         else:
             raise ValueError(f'unexpected segment value: "{segment}"')
 
@@ -73,11 +61,11 @@ class Visitor(VMVisitor):
         comment = f"// {operation}\n"
 
         if operation == "add":
-            return comment + self.generator.visit_add()
+            return comment + self.generator.add()
         elif operation == "sub":
-            return comment + self.generator.visit_sub()
+            return comment + self.generator.sub()
         elif operation == "neg":
-            return comment + self.generator.visit_neg()
+            return comment + self.generator.neg()
         else:
             raise ValueError(f'unexpected arithmetic value: "{operation}"')
 
@@ -87,13 +75,13 @@ class Visitor(VMVisitor):
         comment = f"// {operator}\n"
 
         if operator == "not":
-            return comment + self.generator.visit_not()
+            return comment + self.generator.logical_not()
         elif operator in self.generator.comparison_operators:
-            return comment + self.generator.visit_comparison_operator(operator)
+            return comment + self.generator.comparison_operator(operator)
         elif operator == "and":
-            return comment + self.generator.visit_and()
+            return comment + self.generator.logical_and()
         elif operator == "or":
-            return comment + self.generator.visit_or()
+            return comment + self.generator.logical_or()
         else:
             raise ValueError(f'Unexpected logical operation "{operator}"')
 
@@ -102,21 +90,21 @@ class Visitor(VMVisitor):
         label = ctx.labelIdentifier().getText()
         comment = f"// label {label}\n"
 
-        return comment + self.generator.visit_label(label)
+        return comment + self.generator.label(label)
 
     # Visit a parse tree produced by VMParser#goto.
     def visitGoto(self, ctx: VMParser.GotoContext):
         label = ctx.labelIdentifier().getText()
         comment = f"// goto {label}\n"
 
-        return comment + self.generator.visit_goto(label)
+        return comment + self.generator.goto(label)
 
     # Visit a parse tree produced by VMParser#ifGoto.
     def visitIfGoto(self, ctx: VMParser.IfGotoContext):
         label = ctx.labelIdentifier().getText()
         comment = f"// if-goto {label}\n"
 
-        return comment + self.generator.visit_if_goto(label)
+        return comment + self.generator.if_goto(label)
 
     # Visit a parse tree produced by VMParser#call.
     def visitCall(self, ctx: VMParser.CallContext):
@@ -124,7 +112,7 @@ class Visitor(VMVisitor):
         argument_count = int(ctx.argumentCount().getText())
         comment = f"// call {name} {argument_count}\n"
 
-        return comment + self.generator.visit_call(name, argument_count)
+        return comment + self.generator.call(name, argument_count)
 
     # Visit a parse tree produced by VMParser#function.
     def visitFunction(self, ctx: VMParser.FunctionContext):
@@ -132,10 +120,10 @@ class Visitor(VMVisitor):
         local_variable_count = int(ctx.localVariableCount().getText())
         comment = f"// function {name} {local_variable_count}\n"
 
-        return comment + self.generator.visit_function(name, local_variable_count)
+        return comment + self.generator.function(name, local_variable_count)
 
     # Visit a parse tree produced by VMParser#returnStatement.
     def visitReturnStatement(self, ctx: VMParser.ReturnStatementContext):
         comment = "// return\n"
 
-        return comment + self.generator.visit_return()
+        return comment + self.generator.return_statement()

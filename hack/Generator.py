@@ -135,12 +135,12 @@ class Generator:
                 "@SP",
                 "M=D",
                 # Call Sys.int
-                self.visit_call("Sys.init", 0)
+                self.call("Sys.init", 0),
             ]
         )
 
     @push_operation
-    def visit_push_static(self, i):
+    def push_static(self, i):
         return [
             # Load global address
             f"@{self.namespace}.{i}",
@@ -148,7 +148,7 @@ class Generator:
         ]
 
     @push_operation
-    def visit_push_constant(self, value):
+    def push_constant(self, value):
         return [
             # Set constant in stack pointer
             f"@{value}",
@@ -156,7 +156,7 @@ class Generator:
         ]
 
     @push_operation
-    def visit_push_potato(self, name):
+    def push_segment_value(self, name):
         # fmt:off
         return [
             f"@{name}",
@@ -165,7 +165,7 @@ class Generator:
         # fmt:on
 
     @push_operation
-    def visit_push_pointer(self, pointer):
+    def push_pointer(self, pointer):
         # fmt:off
         return [
             f"@{pointer_name(pointer)}",
@@ -174,7 +174,7 @@ class Generator:
         # fmt:on
 
     @push_operation
-    def visit_push_segment(self, segment, i):
+    def push_segment(self, segment, i):
         return [
             # Calculating addr, where addr = LCL + i
             f"@{self.hack_segment_labels[segment]}",  # Load the value stored in segment
@@ -185,11 +185,11 @@ class Generator:
         ]
 
     @push_operation
-    def visit_push_temp(self, i):
+    def push_temp(self, i):
         return [f"@{temp_register(i)}", "D=M"]
 
     @binary_operation
-    def visit_comparison_operator(self, operator):
+    def comparison_operator(self, operator):
         self.comparison_count += 1
         jump_name = self.comparison_operators[operator]
 
@@ -221,31 +221,31 @@ class Generator:
         # fmt: on
 
     @binary_operation
-    def visit_sub(self):
+    def sub(self):
         return ["M=M-D"]
 
     @binary_operation
-    def visit_add(self):
+    def add(self):
         return ["M=M+D"]
 
     @unary_operation
-    def visit_neg(self):
+    def neg(self):
         return ["M=-M"]
 
     @binary_operation
-    def visit_and(self):
+    def logical_and(self):
         return ["M=D&M"]
 
     @binary_operation
-    def visit_or(self):
+    def logical_or(self):
         return ["M=D|M"]
 
     @unary_operation
-    def visit_not(self):
+    def logical_not(self):
         return ["M=!M"]
 
     @pop_operation
-    def visit_pop_temp(self, i):
+    def pop_temp(self, i):
         return [
             # Store the new value
             f"@{temp_register(i)}",
@@ -253,7 +253,7 @@ class Generator:
         ]
 
     @pop_operation
-    def visit_pop_pointer(self, pointer):
+    def pop_pointer(self, pointer):
         return [
             # Store the new value
             f"@{pointer_name(pointer)}",
@@ -261,14 +261,14 @@ class Generator:
         ]
 
     @pop_operation
-    def visit_pop_static(self, i):
+    def pop_static(self, i):
         return [
             # Store the new value
             f"@{self.namespace}.{i}",
             "M=D",
         ]
 
-    def visit_pop_segment(self, segment, i):
+    def pop_segment(self, segment, i):
         # At a high level performs:
         #   sp--
         #   addr = segment + i
@@ -299,10 +299,10 @@ class Generator:
             ]
         )
 
-    def visit_label(self, label):
+    def label(self, label):
         return f"({label})"
 
-    def visit_goto(self, label):
+    def goto(self, label):
         return "\n".join(
             # fmt: off
             [
@@ -312,7 +312,7 @@ class Generator:
             # fmt: on
         )
 
-    def visit_if_goto(self, label):
+    def if_goto(self, label):
         # condition=pop()
         # if condition, don't jump.
         return "\n".join(
@@ -327,7 +327,7 @@ class Generator:
             # fmt: on
         )
 
-    def visit_call(self, name, local_variable_count):
+    def call(self, name, local_variable_count):
         # At a high level this performs:
         #   push returnAddress // Using a unique label
         #   push LCL
@@ -343,11 +343,11 @@ class Generator:
         return_label = f"{self.namespace}$Ret.{self.call_count}"
         return "\n".join(
             [
-                self.visit_push_constant(return_label),
-                self.visit_push_potato("LCL"),
-                self.visit_push_potato("ARG"),
-                self.visit_push_potato("THIS"),
-                self.visit_push_potato("THAT"),
+                self.push_constant(return_label),
+                self.push_segment_value("LCL"),
+                self.push_segment_value("ARG"),
+                self.push_segment_value("THIS"),
+                self.push_segment_value("THAT"),
                 # # ARG = SP - 5 - nArgs
                 "@SP",
                 "D=M",
@@ -370,13 +370,11 @@ class Generator:
             ]
         )
 
-    def visit_function(self, name, local_variable_count):
+    def function(self, name, local_variable_count):
         # Label the current function so that is can be jumped to, and initialize all local variables to zero
-        return "\n".join(
-            [f"({name})"] + [self.visit_push_constant(0)] * local_variable_count
-        )
+        return "\n".join([f"({name})"] + [self.push_constant(0)] * local_variable_count)
 
-    def visit_return(self):
+    def return_statement(self):
         # At a high level this performs:
         #   endFrame = LCL
         #   returnAddress = *(endFrame - frame_size)
