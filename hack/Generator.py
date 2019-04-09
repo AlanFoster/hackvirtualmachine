@@ -125,6 +125,20 @@ class Generator:
         self.comparison_count = 0
         self.call_count = 0
 
+    def bootstrap(self):
+        return "\n".join(
+            [
+                "// Bootstrap",
+                # SP = 256
+                "@256",
+                "D=A",
+                "@SP",
+                "M=D",
+                # Call Sys.int
+                self.visit_call("Sys.init", 0)
+            ]
+        )
+
     @push_operation
     def visit_push_static(self, i):
         return [

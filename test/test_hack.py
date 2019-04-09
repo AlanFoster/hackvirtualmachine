@@ -4,7 +4,7 @@ from hack.VmToHack import VmToHack
 
 
 def convert(vm_input):
-    return VmToHack.convert("mock_global_namespace", antlr4.InputStream(vm_input))
+    return VmToHack.convert([["mock_global_namespace", antlr4.InputStream(vm_input)]])
 
 
 def combine(instructions):

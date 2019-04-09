@@ -7,12 +7,21 @@ from .Generator import Generator
 
 class VmToHack:
     @staticmethod
-    def convert(namespace, input_stream):
-        lexer = VMLexer(input_stream)
-        stream = antlr4.CommonTokenStream(lexer)
-        parser = VMParser(stream)
-        tree = parser.program()
+    def convert(inputs):
+        result = "" if len(inputs) <= 1 else Generator(None).bootstrap()
 
-        generator = Generator(namespace)
-        visitor = Visitor(generator)
-        return visitor.visit(tree)
+        for namespace, stream in inputs:
+            generator = Generator(namespace)
+            visitor = Visitor(generator)
+
+            if result is None:
+                result = generator.bootstrap()
+
+            lexer = VMLexer(stream)
+            tokens = antlr4.CommonTokenStream(lexer)
+            parser = VMParser(tokens)
+            tree = parser.program()
+
+            result = result + visitor.visit(tree)
+
+        return result

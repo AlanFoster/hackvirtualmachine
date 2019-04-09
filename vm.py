@@ -1,18 +1,36 @@
 import sys
-from pathlib import Path
 import antlr4
+from pathlib import Path
+from dataclasses import dataclass
 from hack.VmToHack import VmToHack
 
 
-def main(argv):
-    input_path = Path(argv[1]).absolute()
-    output_path = Path(input_path).with_suffix(".asm")
+@dataclass(frozen=True)
+class Configuration:
+    files: [str]
+    output: str
 
-    input_stream = antlr4.FileStream(input_path)
-    result = VmToHack.convert(namespace=input_path.name, input_stream=input_stream)
+
+def parse_config(argv) -> Configuration:
+    input_path = Path(argv[1]).absolute()
+
+    if input_path.is_file():
+        return Configuration(files=[input_path], output=input_path.with_suffix(".asm"))
+    else:
+        return Configuration(
+            files=list(input_path.glob("*.vm")),
+            output=input_path.joinpath(input_path.with_suffix(".asm").name),
+        )
+
+
+def main(argv):
+    configuration = parse_config(argv)
+    inputs = [[file.name, antlr4.FileStream(file)] for file in configuration.files]
+
+    result = VmToHack.convert(inputs=inputs)
     print(result)
 
-    with open(output_path, "w") as file:
+    with open(configuration.output, "w") as file:
         file.write(result)
 
 
