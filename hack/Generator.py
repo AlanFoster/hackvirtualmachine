@@ -123,6 +123,7 @@ class Generator:
     def __init__(self, namespace):
         self.namespace = namespace
         self.comparison_count = 0
+        self.call_count = 0
 
     @push_operation
     def visit_push_static(self, i):
@@ -139,6 +140,15 @@ class Generator:
             f"@{value}",
             "D=A",
         ]
+
+    @push_operation
+    def visit_push_potato(self, name):
+        # fmt:off
+        return [
+            f"@{name}",
+            "D=M",
+        ]
+        # fmt:on
 
     @push_operation
     def visit_push_pointer(self, pointer):
@@ -303,11 +313,53 @@ class Generator:
             # fmt: on
         )
 
+    def visit_call(self, name, local_variable_count):
+        # At a high level this performs:
+        #   push returnAddress // Using a unique label
+        #   push LCL
+        #   push ARG
+        #   push THIS
+        #   push THAT
+        #   ARG = SP - 5 - nArgs
+        #   LCL = SP
+        #   goto functionName // Transfer control to the required function
+        #   (returnAddress) // Declare label for the return address
+
+        self.call_count = self.call_count + 1
+        return_label = f"{self.namespace}$Ret.{self.call_count}"
+        return "\n".join(
+            [
+                self.visit_push_constant(return_label),
+                self.visit_push_potato("LCL"),
+                self.visit_push_potato("ARG"),
+                self.visit_push_potato("THIS"),
+                self.visit_push_potato("THAT"),
+                # # ARG = SP - 5 - nArgs
+                "@SP",
+                "D=M",
+                "@5",
+                "D=D-A",
+                f"@{local_variable_count}",
+                "D=D-A",
+                "@ARG",
+                "M=D",
+                # LCL=SP
+                "@SP",
+                "D=M",
+                "@LCL",
+                "M=D",
+                # goto functionName
+                f"@{name} // Jump to function {name}",
+                "0;JMP",
+                # return label for when the function call completes
+                f"({return_label})",
+            ]
+        )
+
     def visit_function(self, name, local_variable_count):
         # Label the current function so that is can be jumped to, and initialize all local variables to zero
         return "\n".join(
-            [f"({self.namespace}.{name})"]
-            + [self.visit_push_constant(0)] * local_variable_count
+            [f"({name})"] + [self.visit_push_constant(0)] * local_variable_count
         )
 
     def visit_return(self):
@@ -322,18 +374,10 @@ class Generator:
         #   arg = *(endFrame - 3)
         #   lcl = *(endFrame - 4)
         #   goto returnAddress
-
         restore_frames = []
         for frame in ["THAT", "THIS", "ARG", "LCL"]:
             # fmt: on
-            restore_frames += [
-                "@R13",
-                "M=M-1",
-                "A=M",
-                "D=M",
-                f"@{frame}",
-                "M=D"
-            ]
+            restore_frames += ["@R13", "M=M-1", "A=M", "D=M", f"@{frame}", "M=D"]
             # fmt: on
 
         return "\n".join(

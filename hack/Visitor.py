@@ -122,9 +122,9 @@ class Visitor(VMVisitor):
     def visitCall(self, ctx: VMParser.CallContext):
         name = ctx.functionName().getText()
         argument_count = int(ctx.argumentCount().getText())
-        comment = f"call {name} {argument_count}"
+        comment = f"// call {name} {argument_count}\n"
 
-        raise ValueError(f"{comment} not supported yet.")
+        return comment + self.generator.visit_call(name, argument_count)
 
     # Visit a parse tree produced by VMParser#function.
     def visitFunction(self, ctx: VMParser.FunctionContext):

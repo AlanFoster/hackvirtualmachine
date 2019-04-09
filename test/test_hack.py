@@ -398,9 +398,66 @@ def test_if_goto():
 
 
 def test_call():
-    with pytest.raises(ValueError) as e:
-        convert("call function_name 4")
-    assert str(e.value) == "call function_name 4 not supported yet."
+    vm_input = "call function_name 4"
+    expected = combine(
+        # fmt: off
+        [
+            "// call function_name 4",
+            "@mock_global_namespace$Ret.1",
+            "D=A",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+            "@LCL",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+            "@ARG",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+            "@THIS",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+            "@THAT",
+            "D=M",
+            "@SP",
+            "A=M",
+            "M=D",
+            "@SP",
+            "M=M+1",
+            "@SP",
+            "D=M",
+            "@5",
+            "D=D-A",
+            "@4",
+            "D=D-A",
+            "@ARG",
+            "M=D",
+            "@SP",
+            "D=M",
+            "@LCL",
+            "M=D",
+            "@function_name // Jump to function function_name",
+            "0;JMP",
+            "(mock_global_namespace$Ret.1)",
+        ]
+        # fmt: on
+    )
+
+    assert convert(vm_input) == expected
 
 
 def test_function():
@@ -409,7 +466,7 @@ def test_function():
         # fmt: off
         [
             "// function function_name 2",
-            "(mock_global_namespace.function_name)",
+            "(function_name)",
             # First local variable - `push constant 0`
             "@0",
             "D=A",
