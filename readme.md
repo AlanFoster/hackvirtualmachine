@@ -52,6 +52,16 @@ representation using the Hack Assembler.
 
 The complete grammar is documented within [VM.g4](./VM.g4)
 
+### Function calls
+
+A caller calls a callee.
+
+- `call function argumentCount` - Prepares for a function call by storing the required return address, and the current
+    function's state on the stack - known as its `frame`.
+- `function name localVariableCount` - Define a new function with the required number of local variables. This can be jumped
+    to using the `call function argumentCount` syntax.
+- `return` Return the last value on the current stack and jump back to the previous caller.
+
 ### Control Flow
 
 - `label LABEL` - Label the current location so that it can be jumped to. For instance you would use this to mark the
