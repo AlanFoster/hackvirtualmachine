@@ -1,17 +1,18 @@
-import sys
 import antlr4
 from pathlib import Path
 from dataclasses import dataclass
-from hack.VmToHack import VmToHack
+from hack.VmToHack import VmToHack, Input
+from typing import List, Any
+import sys
 
 
 @dataclass(frozen=True)
 class Configuration:
-    files: [str]
-    output: str
+    files: List[Path]
+    output: Path
 
 
-def parse_config(argv) -> Configuration:
+def parse_config(argv: List[Any]) -> Configuration:
     input_path = Path(argv[1]).absolute()
 
     if input_path.is_file():
@@ -23,14 +24,16 @@ def parse_config(argv) -> Configuration:
         )
 
 
-def main(argv):
+def main(argv: List[Any]) -> None:
     configuration = parse_config(argv)
-    inputs = [[file.name, antlr4.FileStream(file)] for file in configuration.files]
+    inputs = [
+        Input(namespace=file.name, stream=antlr4.FileStream(str(file)))
+        for file in configuration.files
+    ]
 
     result = VmToHack.convert(inputs=inputs)
     print(result)
-
-    with open(configuration.output, "w") as file:
+    with configuration.output.open(mode="w") as file:
         file.write(result)
 
 

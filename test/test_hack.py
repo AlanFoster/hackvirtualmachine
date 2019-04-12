@@ -1,17 +1,21 @@
+from typing import List
+
 import antlr4
 import pytest
-from hack.VmToHack import VmToHack
+from hack.VmToHack import VmToHack, Input
 
 
-def convert(vm_input):
-    return VmToHack.convert([["mock_global_namespace", antlr4.InputStream(vm_input)]])
+def convert(vm_input: str) -> str:
+    return VmToHack.convert(
+        [Input(namespace="mock_global_namespace", stream=antlr4.InputStream(vm_input))]
+    )
 
 
-def combine(instructions):
+def combine(instructions: List[str]) -> str:
     return "\n".join(instructions) + "\n"
 
 
-def test_push_constant():
+def test_push_constant() -> None:
     vm_input = "push constant 1337"
     expected = combine(
         # fmt: off
@@ -40,7 +44,7 @@ def test_push_constant():
         ("that", 40, "THAT"),
     ],
 )
-def test_push_segment(segment, index, hack_segment):
+def test_push_segment(segment: str, index: int, hack_segment: str) -> None:
     vm_input = f"push {segment} {index}"
     expected = combine(
         [
@@ -61,7 +65,7 @@ def test_push_segment(segment, index, hack_segment):
     assert convert(vm_input) == expected
 
 
-def test_push_temp():
+def test_push_temp() -> None:
     vm_input = "push temp 3"
     expected = combine(
         # fmt: off
@@ -81,7 +85,7 @@ def test_push_temp():
     assert convert(vm_input) == expected
 
 
-def test_invalid_push_temp():
+def test_invalid_push_temp() -> None:
     with pytest.raises(ValueError) as e:
         convert("push temp 100")
     assert (
@@ -90,7 +94,7 @@ def test_invalid_push_temp():
     )
 
 
-def test_push_static():
+def test_push_static() -> None:
     vm_input = "push static 3"
     expected = combine(
         [
@@ -109,7 +113,7 @@ def test_push_static():
 
 
 @pytest.mark.parametrize("target,hack_name", [("0", "THIS"), ("1", "THAT")])
-def test_valid_push_pointer(target, hack_name):
+def test_valid_push_pointer(target: str, hack_name: str) -> None:
     vm_input = f"push pointer {target}"
     expected = combine(
         # fmt: off
@@ -129,7 +133,7 @@ def test_valid_push_pointer(target, hack_name):
     assert convert(vm_input) == expected
 
 
-def test_invalid_push_pointer():
+def test_invalid_push_pointer() -> None:
     with pytest.raises(ValueError) as e:
         convert("push pointer 100")
     assert (
@@ -138,7 +142,7 @@ def test_invalid_push_pointer():
     )
 
 
-def test_pop_temp():
+def test_pop_temp() -> None:
     vm_input = "pop temp 3"
     expected = combine(
         # fmt: off
@@ -156,7 +160,7 @@ def test_pop_temp():
     assert convert(vm_input) == expected
 
 
-def test_invalid_pop_temp():
+def test_invalid_pop_temp() -> None:
     with pytest.raises(ValueError) as e:
         convert("pop temp 100")
     assert (
@@ -174,7 +178,7 @@ def test_invalid_pop_temp():
         ("that", 40, "THAT"),
     ],
 )
-def test_pop_segment(segment, index, hack_segment):
+def test_pop_segment(segment: str, index: int, hack_segment: str) -> None:
     vm_input = f"pop {segment} {index}"
     expected = combine(
         [
@@ -201,7 +205,7 @@ def test_pop_segment(segment, index, hack_segment):
     assert convert(vm_input) == expected
 
 
-def test_pop_static():
+def test_pop_static() -> None:
     vm_input = "pop static 3"
     expected = combine(
         # fmt: off
@@ -220,7 +224,7 @@ def test_pop_static():
 
 
 @pytest.mark.parametrize("target,hack_name", [("0", "THIS"), ("1", "THAT")])
-def test_valid_pop_pointer(target, hack_name):
+def test_valid_pop_pointer(target: str, hack_name: str) -> None:
     vm_input = f"pop pointer {target}"
     expected = combine(
         # fmt: off
@@ -238,7 +242,7 @@ def test_valid_pop_pointer(target, hack_name):
     assert convert(vm_input) == expected
 
 
-def test_invalid_pop_pointer():
+def test_invalid_pop_pointer() -> None:
     with pytest.raises(ValueError) as e:
         convert("pop pointer 200")
     assert (
@@ -248,7 +252,7 @@ def test_invalid_pop_pointer():
 
 
 @pytest.mark.parametrize("operator,expected", [("add", "M=M+D"), ("sub", "M=M-D")])
-def test_math(operator, expected):
+def test_math(operator: str, expected: str) -> None:
     vm_input = operator
     expected = combine(
         # fmt: off
@@ -266,7 +270,7 @@ def test_math(operator, expected):
     assert convert(vm_input) == expected
 
 
-def test_neg():
+def test_neg() -> None:
     vm_input = "neg"
     expected = combine(
         # fmt: off
@@ -282,7 +286,7 @@ def test_neg():
     assert convert(vm_input) == expected
 
 
-def test_not():
+def test_not() -> None:
     vm_input = "not"
     expected = combine(
         # fmt: off
@@ -301,7 +305,7 @@ def test_not():
 @pytest.mark.parametrize(
     "operator,expected", [("eq", "JEQ"), ("gt", "JGT"), ("lt", "JLT")]
 )
-def test_comparison_operators(operator, expected):
+def test_comparison_operators(operator: str, expected: str) -> None:
     vm_input = operator
     expected = combine(
         # fmt: off
@@ -332,7 +336,7 @@ def test_comparison_operators(operator, expected):
 
 
 @pytest.mark.parametrize("operator,expected", [("and", "M=D&M"), ("or", "M=D|M")])
-def test_logical_operators(operator, expected):
+def test_logical_operators(operator: str, expected: str) -> None:
     vm_input = operator
     expected = combine(
         # fmt: off
@@ -350,7 +354,7 @@ def test_logical_operators(operator, expected):
     assert convert(vm_input) == expected
 
 
-def test_label():
+def test_label() -> None:
     vm_input = "label LOOP_START"
     expected = combine(
         # fmt: off
@@ -364,7 +368,7 @@ def test_label():
     assert convert(vm_input) == expected
 
 
-def test_goto():
+def test_goto() -> None:
     vm_input = "goto LOOP_START"
     expected = combine(
         # fmt: off
@@ -379,7 +383,7 @@ def test_goto():
     assert convert(vm_input) == expected
 
 
-def test_if_goto():
+def test_if_goto() -> None:
     vm_input = "if-goto LOOP_START"
     expected = combine(
         # fmt: off
@@ -397,7 +401,7 @@ def test_if_goto():
     assert convert(vm_input) == expected
 
 
-def test_call():
+def test_call() -> None:
     vm_input = "call function_name 4"
     expected = combine(
         # fmt: off
@@ -460,7 +464,7 @@ def test_call():
     assert convert(vm_input) == expected
 
 
-def test_function():
+def test_function() -> None:
     vm_input = "function function_name 2"
     expected = combine(
         # fmt: off
@@ -490,7 +494,7 @@ def test_function():
     assert convert(vm_input) == expected
 
 
-def test_return():
+def test_return() -> None:
     vm_input = "return"
     expected = combine(
         # fmt: off

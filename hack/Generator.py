@@ -1,9 +1,12 @@
-def push_operation(operation):
+from typing import Any, List, Callable
+
+
+def push_operation(operation: Callable[..., List[str]]) -> Callable[..., str]:
     """
     Pushes the current value assigned to the D register onto the stack
     """
 
-    def wrapper(*args, **kwargs) -> str:
+    def wrapper(*args: Any, **kwargs: Any) -> str:
         return "\n".join(
             operation(*args, **kwargs)
             + [
@@ -20,8 +23,8 @@ def push_operation(operation):
     return wrapper
 
 
-def pop_operation(operation):
-    def wrapper(*args, **kwargs) -> str:
+def pop_operation(operation: Callable[..., List[str]]) -> Callable[..., str]:
+    def wrapper(*args: Any, **kwargs: Any) -> str:
         return "\n".join(
             [
                 # Decrement stack, sp--
@@ -35,12 +38,12 @@ def pop_operation(operation):
     return wrapper
 
 
-def unary_operation(operation):
+def unary_operation(operation: Callable[..., List[str]]) -> Callable[..., str]:
     """
     Replaces the top value on the stack with the given computation
     """
 
-    def wrapper(*args, **kwargs) -> str:
+    def wrapper(*args: Any, **kwargs: Any) -> str:
         return "\n".join(
             # fmt: off
             [
@@ -53,12 +56,12 @@ def unary_operation(operation):
     return wrapper
 
 
-def binary_operation(operation):
+def binary_operation(operation: Callable[..., List[str]]) -> Callable[..., str]:
     """
     Pop the top two values from the stack, and push the given binary computation result back onto the stack.
     """
 
-    def wrapper(*args, **kwargs) -> str:
+    def wrapper(*args: Any, **kwargs: Any) -> str:
         return "\n".join(
             # fmt: off
             [
@@ -79,7 +82,7 @@ def binary_operation(operation):
     return wrapper
 
 
-def pointer_name(pointer):
+def pointer_name(pointer: str) -> str:
     pointer_labels = {"0": "THIS", "1": "THAT"}
     if pointer not in pointer_labels:
         raise ValueError(
@@ -88,7 +91,7 @@ def pointer_name(pointer):
     return pointer_labels[pointer]
 
 
-def temp_register(i):
+def temp_register(i: str) -> int:
     temp_registers_start = 5
     temp_registers_end = 12
     allocated_register = temp_registers_start + int(i)
@@ -118,14 +121,15 @@ class Generator:
         "gt": "JGT",
         "lt": "JLT"
     }
+
     # fmt: on
 
-    def __init__(self, namespace):
+    def __init__(self, namespace: str) -> None:
         self.namespace = namespace
         self.comparison_count = 0
         self.call_count = 0
 
-    def bootstrap(self):
+    def bootstrap(self) -> str:
         return "\n".join(
             [
                 "// Bootstrap",
@@ -140,7 +144,7 @@ class Generator:
         )
 
     @push_operation
-    def push_static(self, i):
+    def push_static(self, i: int) -> List[str]:
         return [
             # Load global address
             f"@{self.namespace}.{i}",
@@ -148,7 +152,7 @@ class Generator:
         ]
 
     @push_operation
-    def push_constant(self, value):
+    def push_constant(self, value: str) -> List[str]:
         return [
             # Set constant in stack pointer
             f"@{value}",
@@ -156,7 +160,7 @@ class Generator:
         ]
 
     @push_operation
-    def push_segment_value(self, name):
+    def push_segment_value(self, name: str) -> List[str]:
         # fmt:off
         return [
             f"@{name}",
@@ -165,7 +169,7 @@ class Generator:
         # fmt:on
 
     @push_operation
-    def push_pointer(self, pointer):
+    def push_pointer(self, pointer: str) -> List[str]:
         # fmt:off
         return [
             f"@{pointer_name(pointer)}",
@@ -174,7 +178,7 @@ class Generator:
         # fmt:on
 
     @push_operation
-    def push_segment(self, segment, i):
+    def push_segment(self, segment: str, i: int) -> List[str]:
         return [
             # Calculating addr, where addr = LCL + i
             f"@{self.hack_segment_labels[segment]}",  # Load the value stored in segment
@@ -185,11 +189,11 @@ class Generator:
         ]
 
     @push_operation
-    def push_temp(self, i):
+    def push_temp(self, i: str) -> List[str]:
         return [f"@{temp_register(i)}", "D=M"]
 
     @binary_operation
-    def comparison_operator(self, operator):
+    def comparison_operator(self, operator: str) -> List[str]:
         self.comparison_count += 1
         jump_name = self.comparison_operators[operator]
 
@@ -221,31 +225,31 @@ class Generator:
         # fmt: on
 
     @binary_operation
-    def sub(self):
+    def sub(self) -> List[str]:
         return ["M=M-D"]
 
     @binary_operation
-    def add(self):
+    def add(self) -> List[str]:
         return ["M=M+D"]
 
     @unary_operation
-    def neg(self):
+    def neg(self) -> List[str]:
         return ["M=-M"]
 
     @binary_operation
-    def logical_and(self):
+    def logical_and(self) -> List[str]:
         return ["M=D&M"]
 
     @binary_operation
-    def logical_or(self):
+    def logical_or(self) -> List[str]:
         return ["M=D|M"]
 
     @unary_operation
-    def logical_not(self):
+    def logical_not(self) -> List[str]:
         return ["M=!M"]
 
     @pop_operation
-    def pop_temp(self, i):
+    def pop_temp(self, i: str) -> List[str]:
         return [
             # Store the new value
             f"@{temp_register(i)}",
@@ -253,7 +257,7 @@ class Generator:
         ]
 
     @pop_operation
-    def pop_pointer(self, pointer):
+    def pop_pointer(self, pointer: str) -> List[str]:
         return [
             # Store the new value
             f"@{pointer_name(pointer)}",
@@ -261,14 +265,14 @@ class Generator:
         ]
 
     @pop_operation
-    def pop_static(self, i):
+    def pop_static(self, i: int) -> List[str]:
         return [
             # Store the new value
             f"@{self.namespace}.{i}",
             "M=D",
         ]
 
-    def pop_segment(self, segment, i):
+    def pop_segment(self, segment: str, i: int) -> str:
         # At a high level performs:
         #   sp--
         #   addr = segment + i
@@ -299,10 +303,10 @@ class Generator:
             ]
         )
 
-    def label(self, label):
+    def label(self, label: str) -> str:
         return f"({label})"
 
-    def goto(self, label):
+    def goto(self, label: str) -> str:
         return "\n".join(
             # fmt: off
             [
@@ -312,7 +316,7 @@ class Generator:
             # fmt: on
         )
 
-    def if_goto(self, label):
+    def if_goto(self, label: str) -> str:
         # condition=pop()
         # if condition, don't jump.
         return "\n".join(
@@ -327,7 +331,7 @@ class Generator:
             # fmt: on
         )
 
-    def call(self, name, local_variable_count):
+    def call(self, name: str, local_variable_count: int) -> str:
         # At a high level this performs:
         #   push returnAddress // Using a unique label
         #   push LCL
@@ -370,11 +374,11 @@ class Generator:
             ]
         )
 
-    def function(self, name, local_variable_count):
+    def function(self, name: str, local_variable_count: int) -> str:
         # Label the current function so that is can be jumped to, and initialize all local variables to zero
         return "\n".join([f"({name})"] + [self.push_constant(0)] * local_variable_count)
 
-    def return_statement(self):
+    def return_statement(self) -> str:
         # At a high level this performs:
         #   endFrame = LCL
         #   returnAddress = *(endFrame - frame_size)
@@ -386,7 +390,7 @@ class Generator:
         #   arg = *(endFrame - 3)
         #   lcl = *(endFrame - 4)
         #   goto returnAddress
-        restore_frames = []
+        restore_frames: List[str] = []
         for frame in ["THAT", "THIS", "ARG", "LCL"]:
             # fmt: on
             restore_frames += ["@R13", "M=M-1", "A=M", "D=M", f"@{frame}", "M=D"]

@@ -1,26 +1,28 @@
+from typing import cast
 from parser.VMParser import VMParser
 from parser.VMVisitor import VMVisitor
+from .Generator import Generator
 
 
 class Visitor(VMVisitor):
-    def __init__(self, generator):
+    def __init__(self, generator: Generator):
         self.generator = generator
 
     # Visit a parse tree produced by VMParser#program.
-    def visitProgram(self, ctx: VMParser.ProgramContext):
+    def visitProgram(self, ctx: VMParser.ProgramContext) -> str:
         return self.visitStatements(ctx.statements())
 
     # Visit a parse tree produced by VMParser#statements.
-    def visitStatements(self, ctx: VMParser.StatementsContext):
+    def visitStatements(self, ctx: VMParser.StatementsContext) -> str:
         instructions = [self.visit(child) for child in ctx.getChildren()]
         return "\n".join(instructions) + "\n"
 
     # Visit a parse tree produced by VMParser#statement.
-    def visitStatement(self, ctx: VMParser.StatementContext):
-        return self.visitChildren(ctx)
+    def visitStatement(self, ctx: VMParser.StatementContext) -> str:
+        return cast(str, self.visitChildren(ctx))
 
     # Visit a parse tree produced by VMParser#push.
-    def visitPush(self, ctx: VMParser.PushContext):
+    def visitPush(self, ctx: VMParser.PushContext) -> str:
         segment = ctx.segment().getText()
         i = ctx.INT().getText()
         comment = f"// push {segment} {i}\n"
@@ -39,7 +41,7 @@ class Visitor(VMVisitor):
             raise ValueError(f'unexpected segment value: "{segment}"')
 
     # Visit a parse tree produced by VMParser#pop.
-    def visitPop(self, ctx: VMParser.PopContext):
+    def visitPop(self, ctx: VMParser.PopContext) -> str:
         segment = ctx.segment().getText()
         i = ctx.INT().getText()
         comment = f"// pop {segment} {i}\n"
@@ -56,7 +58,7 @@ class Visitor(VMVisitor):
             raise ValueError(f'unexpected segment value: "{segment}"')
 
     # Visit a parse tree produced by VMParser#arithmetic.
-    def visitArithmetic(self, ctx: VMParser.ArithmeticContext):
+    def visitArithmetic(self, ctx: VMParser.ArithmeticContext) -> str:
         operation = ctx.getText()
         comment = f"// {operation}\n"
 
@@ -70,7 +72,7 @@ class Visitor(VMVisitor):
             raise ValueError(f'unexpected arithmetic value: "{operation}"')
 
     # Visit a parse tree produced by VMParser#logical.
-    def visitLogical(self, ctx: VMParser.LogicalContext):
+    def visitLogical(self, ctx: VMParser.LogicalContext) -> str:
         operator = ctx.getText()
         comment = f"// {operator}\n"
 
@@ -86,28 +88,28 @@ class Visitor(VMVisitor):
             raise ValueError(f'Unexpected logical operation "{operator}"')
 
     # Visit a parse tree produced by VMParser#label.
-    def visitLabel(self, ctx: VMParser.LabelContext):
+    def visitLabel(self, ctx: VMParser.LabelContext) -> str:
         label = ctx.labelIdentifier().getText()
         comment = f"// label {label}\n"
 
         return comment + self.generator.label(label)
 
     # Visit a parse tree produced by VMParser#goto.
-    def visitGoto(self, ctx: VMParser.GotoContext):
+    def visitGoto(self, ctx: VMParser.GotoContext) -> str:
         label = ctx.labelIdentifier().getText()
         comment = f"// goto {label}\n"
 
         return comment + self.generator.goto(label)
 
     # Visit a parse tree produced by VMParser#ifGoto.
-    def visitIfGoto(self, ctx: VMParser.IfGotoContext):
+    def visitIfGoto(self, ctx: VMParser.IfGotoContext) -> str:
         label = ctx.labelIdentifier().getText()
         comment = f"// if-goto {label}\n"
 
         return comment + self.generator.if_goto(label)
 
     # Visit a parse tree produced by VMParser#call.
-    def visitCall(self, ctx: VMParser.CallContext):
+    def visitCall(self, ctx: VMParser.CallContext) -> str:
         name = ctx.functionName().getText()
         argument_count = int(ctx.argumentCount().getText())
         comment = f"// call {name} {argument_count}\n"
@@ -115,7 +117,7 @@ class Visitor(VMVisitor):
         return comment + self.generator.call(name, argument_count)
 
     # Visit a parse tree produced by VMParser#function.
-    def visitFunction(self, ctx: VMParser.FunctionContext):
+    def visitFunction(self, ctx: VMParser.FunctionContext) -> str:
         name = ctx.functionName().getText()
         local_variable_count = int(ctx.localVariableCount().getText())
         comment = f"// function {name} {local_variable_count}\n"
@@ -123,7 +125,7 @@ class Visitor(VMVisitor):
         return comment + self.generator.function(name, local_variable_count)
 
     # Visit a parse tree produced by VMParser#returnStatement.
-    def visitReturnStatement(self, ctx: VMParser.ReturnStatementContext):
+    def visitReturnStatement(self, ctx: VMParser.ReturnStatementContext) -> str:
         comment = "// return\n"
 
         return comment + self.generator.return_statement()

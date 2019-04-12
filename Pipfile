@@ -6,9 +6,10 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-black = "*"
-pytest-pep8 = "*"
 pytest-flake8 = "*"
 pdbpp = "*"
+mypy = "*"
+pytest-mypy = "*"
 
 [packages]
 antlr4-python3-runtime = "*"

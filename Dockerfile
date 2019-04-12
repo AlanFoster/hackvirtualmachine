@@ -1,6 +1,9 @@
-FROM python:3.8.0a3-alpine3.9
+FROM python:3.7.3-alpine3.9
 
 WORKDIR /app
+
+## Setup antlr for typed-ast which mypy depends on :/
+RUN apk add --no-cache gcc build-base
 
 ## Setup antlr
 RUN apk add --no-cache curl openjdk8-jre \
